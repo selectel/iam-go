@@ -1,0 +1,110 @@
+---
+linters:
+  presets:
+    - bugs        # bugs detection
+    - comment     # comments analysis
+    - complexity  # code complexity analysis
+    - error       # error handling analysis
+    - format      # code formatting
+    - metalinter  # linter that contains multiple rules or multiple linters
+    - performance # performance
+    - unused      # Checks Go code for unused constants, variables, functions and types.
+
+  enable:
+    - asciicheck          # Checks that all code identifiers does not have non-ASCII symbols in the name.
+    - containedctx        # Detects too much false positives around (*http.Request).Context()
+    - dogsled             # Checks assignments with too many blank identifiers (e.g. x, , , _, := f()).
+    - dupl                # Detects code clone. It's recommended to use
+    - errname             # Checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error.
+    - forcetypeassert     # Finds forced type assertions.
+    - gochecknoglobals    # Checks that no globals in code. But we need global variables. For config or single-tone pattern realisation.
+    - gochecknoinits      # Checks that no inits functions in app. Init functions have some side effects. But we need init function for correct app initialize.
+    - goconst             # Finds repeated strings that could be replaced by a constant.
+    - godox               # Detects for "TODO" or "FIXME" comments.
+    - gomoddirectives     # Manages the use of 'replace', 'retract', and 'excludes' directives in go.mod.
+    - goprintffuncname    # Checks that printf-like functions are named with f at the end.
+    - gosimple            # Detects areas in Go source code that can be simplified.
+    - lll                 # Reports long lines
+    - makezero            # Finds slice declarations with non-zero initial length.
+    - nakedret            # Checks that functions with naked returns are not longer than a maximum size (can be zero).
+    - nolintlint          # Requires explanation for using nolint comments.
+    - predeclared         # Finds code that shadows one of Go's predeclared identifiers.
+    - promlinter          # Checks Prometheus metrics naming via promlint.
+    - stylecheck          # Stylecheck is a replacement for golint.
+    - tagliatelle         # Requires struct fields and json description to be the same. Need to rename many of json.
+    - thelper             # Detects golang test helpers without t.Helper()
+    - tparallel           # Detects inappropriate usage of t.Parallel() method in your Go test codes.
+    - unconvert           # Remove unnecessary type conversions.
+    - wastedassign        # Finds wasted assignment statements.
+    - whitespace          # Checks for unnecessary newlines at the start and end of functions, if, for, etc.
+
+  disable:
+    - contextcheck        # Detects too much false positives around (*http.Request).Context()
+    - maligned            # Deprecated: performance — superseded by govet(fieldalignment)
+    - scopelint           # Deprecated: performance — superseded by exportloopref
+
+linters-settings:
+  dogsled:
+    max-blank-identifiers: 3
+  
+  errorlint:
+    errorf: true
+  
+  exhaustive:
+    default-signifies-exhaustive: true
+  
+  funlen:
+    lines: 100
+    statements: 60
+  
+  gci:
+    sections:
+    - standard
+    - default
+    - prefix(github.com/selectel/iam-go)
+  
+  godot:
+    scope: declarations
+    exclude:
+    - '^ @'
+  
+  goimports:
+    local-prefixes: github.com/selectel/iam-go
+  
+  lll:
+    tab-width: 4
+  
+  nolintlint:
+    allow-leading-space: false
+  
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        json: snake
+        yaml: snake
+  
+  tagalign:
+    sort: false # puts `example` tag before more important tag `json`
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-rules:
+  - path: _test\.go
+    linters:
+    - dupl
+    - goerr113
+    - forcetypeassert
+    - gochecknoglobals
+
+  - path: _test\.go
+    text: "fieldalignment"
+    linters:
+    - govet
+
+  - source: "^//go:generate "
+    linters:
+    - lll
+
+...
