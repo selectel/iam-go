@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/selectel/iam-go/iamerrors"
 )
@@ -13,7 +14,7 @@ import (
 type DoRequestInput struct {
 	Body   io.Reader
 	Method string
-	URL    string
+	Path   string
 }
 
 type BaseClient struct {
@@ -37,7 +38,12 @@ type BaseClient struct {
 //
 // X-Auth-Token and other optional headers are added automatically.
 func (bc *BaseClient) DoRequest(ctx context.Context, input DoRequestInput) ([]byte, error) {
-	request, err := http.NewRequestWithContext(ctx, input.Method, input.URL, input.Body)
+	url, err := url.JoinPath(bc.APIUrl, input.Path)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	request, err := http.NewRequestWithContext(ctx, input.Method, url, input.Body)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}

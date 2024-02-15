@@ -17,7 +17,7 @@ const (
 	appName = "iam-go"
 
 	// defaultIAMApiURL represents a default Selectel IAM API URL.
-	defaultIAMApiURL = "https://api.selectel.ru/iam/v1"
+	defaultIAMApiURL = "https://api.selectel.ru"
 
 	// defaultHTTPTimeout represents the default timeout (in seconds) for HTTP requests.
 	defaultHTTPTimeout = 120

@@ -15,10 +15,10 @@ import (
 )
 
 const (
-	usersURL        = "/users"
-	usersIDURL      = "/users/123"
-	rolesURL        = "/users/123/roles"
-	resendInviteURL = "/users/123/resend_invite"
+	usersURL        = "iam/v1/users"
+	usersIDURL      = "iam/v1/users/123"
+	rolesURL        = "iam/v1/users/123/roles"
+	resendInviteURL = "iam/v1/users/123/resend_invite"
 )
 
 func TestList(t *testing.T) {

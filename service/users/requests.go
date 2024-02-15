@@ -11,6 +11,8 @@ import (
 	"github.com/selectel/iam-go/internal/client"
 )
 
+const apiVersion = "iam/v1"
+
 // Users is used to communicate with the Users API.
 type Users struct {
 	baseClient *client.BaseClient
@@ -25,7 +27,7 @@ func New(baseClient *client.BaseClient) *Users {
 
 // List returns a list of Users for the account.
 func (u *Users) List(ctx context.Context) ([]User, error) {
-	url, err := url.JoinPath(u.baseClient.APIUrl, "users")
+	path, err := url.JoinPath(apiVersion, "users")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -33,7 +35,7 @@ func (u *Users) List(ctx context.Context) ([]User, error) {
 	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -54,7 +56,7 @@ func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
 
-	url, err := url.JoinPath(u.baseClient.APIUrl, "users", userID)
+	path, err := url.JoinPath(apiVersion, "users", userID)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -62,7 +64,7 @@ func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
 	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -83,7 +85,7 @@ func (u *Users) Create(ctx context.Context, input CreateRequest) (*User, error) 
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserEmailRequired, Desc: "No email for User was provided."}
 	}
 
-	url, err := url.JoinPath(u.baseClient.APIUrl, "users")
+	path, err := url.JoinPath(apiVersion, "users")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -103,7 +105,7 @@ func (u *Users) Create(ctx context.Context, input CreateRequest) (*User, error) 
 	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: http.MethodPost,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -124,7 +126,7 @@ func (u *Users) Delete(ctx context.Context, userID string) error {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
 
-	url, err := url.JoinPath(u.baseClient.APIUrl, "users", userID)
+	path, err := url.JoinPath(apiVersion, "users", userID)
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -132,7 +134,7 @@ func (u *Users) Delete(ctx context.Context, userID string) error {
 	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodDelete,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -148,7 +150,7 @@ func (u *Users) ResendInvite(ctx context.Context, userID string) error {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
 
-	url, err := url.JoinPath(u.baseClient.APIUrl, "users", userID, "resend_invite")
+	path, err := url.JoinPath(apiVersion, "users", userID, "resend_invite")
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -156,7 +158,7 @@ func (u *Users) ResendInvite(ctx context.Context, userID string) error {
 	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodPatch,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -192,7 +194,7 @@ func (u *Users) UnassignRoles(ctx context.Context, userID string, roles []Role) 
 }
 
 func (u *Users) manageRoles(ctx context.Context, method string, userID string, roles []Role) error {
-	url, err := url.JoinPath(u.baseClient.APIUrl, "users", userID, "roles")
+	path, err := url.JoinPath(apiVersion, "users", userID, "roles")
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -206,7 +208,7 @@ func (u *Users) manageRoles(ctx context.Context, method string, userID string, r
 	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: method,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.

@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	serviceUsersURL      = "/service_users"
-	serviceUsersIDURL    = "/service_users/123"
-	serviceUsersRolesURL = "/service_users/123/roles"
+	serviceUsersURL      = "iam/v1/service_users"
+	serviceUsersIDURL    = "iam/v1/service_users/123"
+	serviceUsersRolesURL = "iam/v1/service_users/123/roles"
 )
 
 func TestList(t *testing.T) {
