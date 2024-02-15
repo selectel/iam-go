@@ -15,6 +15,7 @@ import (
 )
 
 const (
+	//nolint:gosec
 	credentialsURL = "iam/v1/service_users/1/credentials"
 )
 
