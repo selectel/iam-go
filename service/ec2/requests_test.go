@@ -73,19 +73,19 @@ func TestList(t *testing.T) {
 			assert := assert.New(t)
 			require := require.New(t)
 
-			ec2API := New(&client.BaseClient{
+			ec2CredAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
 				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
 			})
 
-			httpmock.ActivateNonDefault(ec2API.baseClient.HTTPClient)
+			httpmock.ActivateNonDefault(ec2CredAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
 			tt.prepare()
 
 			ctx := context.Background()
-			actualResponse, err := ec2API.List(ctx, tt.args.userID)
+			actualResponse, err := ec2CredAPI.List(ctx, tt.args.userID)
 
 			require.ErrorIs(err, tt.expectedError)
 
@@ -153,19 +153,19 @@ func TestCreate(t *testing.T) {
 			assert := assert.New(t)
 			require := require.New(t)
 
-			ec2API := New(&client.BaseClient{
+			ec2CredAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
 				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
 			})
 
-			httpmock.ActivateNonDefault(ec2API.baseClient.HTTPClient)
+			httpmock.ActivateNonDefault(ec2CredAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
 			tt.prepare()
 
 			ctx := context.Background()
-			actualResponse, err := ec2API.Create(ctx, tt.args.userID, tt.args.name, tt.args.projectID)
+			actualResponse, err := ec2CredAPI.Create(ctx, tt.args.userID, tt.args.name, tt.args.projectID)
 
 			require.ErrorIs(err, tt.expectedError)
 
@@ -224,19 +224,19 @@ func TestDelete(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			require := require.New(t)
 
-			ec2API := New(&client.BaseClient{
+			ec2CredAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
 				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
 			})
 
-			httpmock.ActivateNonDefault(ec2API.baseClient.HTTPClient)
+			httpmock.ActivateNonDefault(ec2CredAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
 			tt.prepare()
 
 			ctx := context.Background()
-			err := ec2API.Delete(ctx, tt.args.userID, tt.args.accessKey)
+			err := ec2CredAPI.Delete(ctx, tt.args.userID, tt.args.accessKey)
 
 			require.ErrorIs(err, tt.expectedError)
 		})

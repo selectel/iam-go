@@ -13,19 +13,19 @@ import (
 
 const apiVersion = "iam/v1"
 
-// EC2 is used to communicate with the EC2(S3) API.
+// EC2 is used to communicate with the EC2 Credentials API.
 type EC2 struct {
 	baseClient *client.BaseClient
 }
 
-// Initialises EC2 with the given client.
+// Initialises EC2 instance with the given client.
 func New(baseClient *client.BaseClient) *EC2 {
 	return &EC2{
 		baseClient: baseClient,
 	}
 }
 
-// List returns a list of EC2-credentials for the given user.
+// List returns a list of EC2 credentials for the given user.
 func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
@@ -54,7 +54,7 @@ func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
 	return credentials.Credentials, nil
 }
 
-// Create creates a new EC2-credential for the given user.
+// Create creates a new EC2 credential for the given user.
 func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*CreatedCredential, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
@@ -94,7 +94,7 @@ func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*Cr
 	return &createdCredential, nil
 }
 
-// Delete deletes an EC2-credential for the given user.
+// Delete deletes an EC2 credential for the given user.
 func (ec2 *EC2) Delete(ctx context.Context, userID, accessKey string) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}

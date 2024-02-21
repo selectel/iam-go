@@ -44,10 +44,9 @@ type ServiceUser struct {
 }
 
 type Role struct {
-	ProjectID   string   `json:"project_id,omitempty"`
-	ProjectName string   `json:"project_name,omitempty"`
-	RoleName    RoleName `json:"role_name"`
-	Scope       Scope    `json:"scope"`
+	ProjectID string   `json:"project_id,omitempty"`
+	RoleName  RoleName `json:"role_name"`
+	Scope     Scope    `json:"scope"`
 }
 
 // CreateRequest is used to set options for Create method.

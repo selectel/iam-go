@@ -45,13 +45,13 @@ type Client struct {
 	// baseClient contains the configuration of the Client.
 	baseClient *baseclient.BaseClient
 
-	// Users instance is used to make requests against Selectel IAM API.
+	// Users instance is used to make requests against Selectel IAM API	and manage panel users.
 	Users *users.Users
 
-	// ServiceUsers instance is used to make requests against Selectel IAM API.
+	// ServiceUsers instance is used to make requests against Selectel IAM API and manage service users.
 	ServiceUsers *serviceusers.ServiceUsers
 
-	// EC2 instance is used to make requests against Selectel IAM API.
+	// EC2 instance is used to make requests against Selectel IAM API and manage EC2 credentials.
 	EC2 *ec2.EC2
 }
 
