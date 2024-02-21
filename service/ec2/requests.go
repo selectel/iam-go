@@ -11,6 +11,8 @@ import (
 	"github.com/selectel/iam-go/internal/client"
 )
 
+const apiVersion = "iam/v1"
+
 // EC2 is used to communicate with the EC2 Credentials API.
 type EC2 struct {
 	baseClient *client.BaseClient
@@ -29,7 +31,7 @@ func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
 
-	url, err := url.JoinPath(ec2.baseClient.APIUrl, "service_users", userID, "credentials")
+	path, err := url.JoinPath(apiVersion, "service_users", userID, "credentials")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -37,7 +39,7 @@ func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
 	response, err := ec2.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -64,7 +66,7 @@ func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*Cr
 		return nil, iamerrors.Error{Err: iamerrors.ErrProjectIDRequired, Desc: "No projectID was provided."}
 	}
 
-	url, err := url.JoinPath(ec2.baseClient.APIUrl, "service_users", userID, "credentials")
+	path, err := url.JoinPath(apiVersion, "service_users", userID, "credentials")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
@@ -77,7 +79,7 @@ func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*Cr
 	response, err := ec2.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: http.MethodPost,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
@@ -101,15 +103,14 @@ func (ec2 *EC2) Delete(ctx context.Context, userID, accessKey string) error {
 		return iamerrors.Error{Err: iamerrors.ErrCredentialAccessKeyRequired, Desc: "No accessKey was provided."}
 	}
 
-	url, err := url.JoinPath(ec2.baseClient.APIUrl, "service_users", userID, "credentials", accessKey)
+	path, err := url.JoinPath(apiVersion, "service_users", userID, "credentials", accessKey)
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
-
 	_, err = ec2.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodDelete,
-		URL:    url,
+		Path:   path,
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.

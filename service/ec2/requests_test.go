@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	credentialsURL = "/service_users/1/credentials"
+	//nolint:gosec
+	credentialsURL = "iam/v1/service_users/1/credentials"
 )
 
 func TestList(t *testing.T) {

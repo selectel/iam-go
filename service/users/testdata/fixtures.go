@@ -2,7 +2,7 @@ package testdata
 
 const (
 	TestToken = "test-token"
-	TestURL   = "http://example.org"
+	TestURL   = "http://example.org/"
 )
 
 const TestGetUsersResponse = `{

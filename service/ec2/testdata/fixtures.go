@@ -2,7 +2,7 @@ package testdata
 
 const (
 	TestToken = "test-token"
-	TestURL   = "http://example.org"
+	TestURL   = "http://example.org/"
 )
 
 const TestGetCredentialsResponse = `{
@@ -13,7 +13,6 @@ const TestGetCredentialsResponse = `{
 	}]
 }`
 
-// nolint gosec complains
 const TestCreateCredentialResponse = `{
 	"name": "12345",
 	"project_id": "test-project",

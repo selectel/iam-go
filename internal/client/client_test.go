@@ -102,7 +102,7 @@ func TestDoRequest(t *testing.T) {
 			actualBody, err := baseClient.DoRequest(ctx, DoRequestInput{
 				Body:   tt.args.body,
 				Method: tt.args.method,
-				URL:    baseClient.APIUrl,
+				Path:   "/",
 			})
 
 			require.ErrorIs(err, tt.expectedError)
