@@ -1,7 +1,7 @@
 package ec2
 
-// CreatedCredential represents a EC2-credential for the given user.
-// It contains "secret_key" field, which appears only once at the end of creating.
+// CreatedCredential represents a EC2 credential for the given user.
+// It contains "secret_key" field, which appears only once and only after creating.
 type CreatedCredential struct {
 	Name      string `json:"name"`
 	ProjectID string `json:"project_id"`
@@ -9,7 +9,7 @@ type CreatedCredential struct {
 	SecretKey string `json:"secret_key"`
 }
 
-// Credential represents an EC2-credential for the given user.
+// Credential represents an EC2 credential for the given user.
 type Credential struct {
 	Name      string `json:"name"`
 	ProjectID string `json:"project_id"`

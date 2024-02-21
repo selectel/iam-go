@@ -34,14 +34,14 @@ func main() {
 		return
 	}
 
-	// Get the EC2 instance.
-	ec2API := iamClient.EC2
+	// Get the EC2 Credentials APIinstance.
+	ec2CredAPI := iamClient.EC2
 
 	// Prepare an empty context.
 	ctx := context.Background()
 
-	// Create a new EC2 credential for the Service User ID.
-	credential, err := ec2API.Create(
+	// Create a new EC2 credential for the Service User.
+	credential, err := ec2CredAPI.Create(
 		ctx,
 		userID,
 		name,
@@ -56,7 +56,7 @@ func main() {
 	fmt.Printf("Step 1: Created credential Secret Key: %s Access Key: %s\n", credential.SecretKey, credential.AccessKey)
 
 	// // Delete an existing EC2 credential.
-	// err = ec2API.Delete(ctx, &ec2.DeleteInput{
+	// err = ec2CredAPI.Delete(ctx, &ec2.DeleteInput{
 	// 	UserID:    userID,
 	// 	AccessKey: credential.AccessKey,
 	// })
