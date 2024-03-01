@@ -1,52 +1,13 @@
 package serviceusers
 
-type RoleName string
-
-const (
-	// Account owner.
-	AccountOwner RoleName = "account_owner"
-
-	// User administrator.
-	IAMAdmin RoleName = "iam_admin"
-
-	// Account/Project administrator.
-	Member RoleName = "member"
-
-	// Account/Project reader.
-	Reader RoleName = "reader"
-
-	// Billing administrator.
-	Billing RoleName = "billing"
-
-	// Object storage administrator.
-	ObjectStorageAdmin RoleName = "object_storage:admin"
-
-	// Object storage user.
-	ObjectStorageUser RoleName = "object_storage_user"
-)
-
-type Scope string
-
-const (
-	// Project scope.
-	Project Scope = "project"
-
-	// Account scope.
-	Account Scope = "account"
-)
+import "github.com/selectel/iam-go/service/roles"
 
 // ServiceUser represents a Selectel Service User.
 type ServiceUser struct {
-	ID      string `json:"id"`
-	Enabled bool   `json:"enabled"`
-	Name    string `json:"name"`
-	Roles   []Role `json:"roles"`
-}
-
-type Role struct {
-	ProjectID string   `json:"project_id,omitempty"`
-	RoleName  RoleName `json:"role_name"`
-	Scope     Scope    `json:"scope"`
+	ID      string       `json:"id"`
+	Enabled bool         `json:"enabled"`
+	Name    string       `json:"name"`
+	Roles   []roles.Role `json:"roles"`
 }
 
 // CreateRequest is used to set options for Create method.
@@ -54,7 +15,7 @@ type CreateRequest struct {
 	Enabled  bool
 	Name     string
 	Password string
-	Roles    []Role
+	Roles    []roles.Role
 }
 
 // UpdateRequest is used to set options for Update method.
@@ -65,10 +26,10 @@ type UpdateRequest struct {
 }
 
 type createRequest struct {
-	Enabled  bool   `json:"enabled,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Password string `json:"password,omitempty"`
-	Roles    []Role `json:"roles,omitempty"`
+	Enabled  bool         `json:"enabled,omitempty"`
+	Name     string       `json:"name,omitempty"`
+	Password string       `json:"password,omitempty"`
+	Roles    []roles.Role `json:"roles,omitempty"`
 }
 
 type updateRequest struct {
@@ -78,7 +39,7 @@ type updateRequest struct {
 }
 
 type manageRolesRequest struct {
-	Roles []Role `json:"roles"`
+	Roles []roles.Role `json:"roles"`
 }
 
 type listResponse struct {
