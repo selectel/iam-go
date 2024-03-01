@@ -1,6 +1,6 @@
 package users
 
-import "github.com/selectel/iam-go/service/models"
+import "github.com/selectel/iam-go/service/roles"
 
 // AuthType represents a type of authentication of a User.
 type AuthType string
@@ -15,11 +15,11 @@ const (
 
 // User represents a Selectel Panel User.
 type User struct {
-	AuthType   AuthType      `json:"auth_type"`
-	Federation *Federation   `json:"federation,omitempty"`
-	Roles      []models.Role `json:"roles"`
-	ID         string        `json:"id"`
-	KeystoneID string        `json:"keystone_id"`
+	AuthType   AuthType     `json:"auth_type"`
+	Federation *Federation  `json:"federation,omitempty"`
+	Roles      []roles.Role `json:"roles"`
+	ID         string       `json:"id"`
+	KeystoneID string       `json:"keystone_id"`
 }
 
 type Federation struct {
@@ -32,20 +32,20 @@ type CreateRequest struct {
 	AuthType   AuthType
 	Email      string
 	Federation *Federation
-	Roles      []models.Role
+	Roles      []roles.Role
 }
 
 type createRequest struct {
-	AuthType          AuthType      `json:"auth_type,omitempty"`
-	Email             string        `json:"email,omitempty"`
-	Federation        *Federation   `json:"federation,omitempty"`
-	Roles             []models.Role `json:"roles,omitempty"`
-	SubscriptionsOnly bool          `json:"subscriptions_only"` // Issue, should be hardcoded to `false`
-	Subscriptions     []string      `json:"subscriptions"`      // Issue, should be hardcoded to `[]`
+	AuthType          AuthType     `json:"auth_type,omitempty"`
+	Email             string       `json:"email,omitempty"`
+	Federation        *Federation  `json:"federation,omitempty"`
+	Roles             []roles.Role `json:"roles,omitempty"`
+	SubscriptionsOnly bool         `json:"subscriptions_only"` // Issue, should be hardcoded to `false`
+	Subscriptions     []string     `json:"subscriptions"`      // Issue, should be hardcoded to `[]`
 }
 
 type manageRolesRequest struct {
-	Roles []models.Role `json:"roles"`
+	Roles []roles.Role `json:"roles"`
 }
 
 type listResponse struct {

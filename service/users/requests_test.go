@@ -11,7 +11,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/models"
+	"github.com/selectel/iam-go/service/roles"
 	"github.com/selectel/iam-go/service/users/testdata"
 )
 
@@ -43,8 +43,8 @@ func TestList(t *testing.T) {
 					AuthType:   "local",
 					KeystoneID: "123",
 					ID:         "123",
-					Roles: []models.Role{
-						{Scope: models.Account, RoleName: models.Member},
+					Roles: []roles.Role{
+						{Scope: roles.Account, RoleName: roles.Member},
 					},
 				},
 			},
@@ -117,8 +117,8 @@ func TestGet(t *testing.T) {
 				AuthType:   "local",
 				KeystoneID: "123",
 				ID:         "123",
-				Roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				Roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			expectedError: nil,
@@ -234,7 +234,7 @@ func TestCreate(t *testing.T) {
 		authType   AuthType
 		email      string
 		federation Federation
-		roles      []models.Role
+		roles      []roles.Role
 	}
 	tests := []struct {
 		name             string
@@ -252,8 +252,8 @@ func TestCreate(t *testing.T) {
 					ExternalID: "123",
 					ID:         "123",
 				},
-				roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			prepare: func() {
@@ -271,8 +271,8 @@ func TestCreate(t *testing.T) {
 				},
 				ID:         "123",
 				KeystoneID: "123",
-				Roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				Roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			expectedError: nil,
@@ -286,8 +286,8 @@ func TestCreate(t *testing.T) {
 					ExternalID: "123",
 					ID:         "123",
 				},
-				roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			prepare: func() {
@@ -398,7 +398,7 @@ func TestResendInvite(t *testing.T) {
 func TestAssignRoles(t *testing.T) {
 	type args struct {
 		userID string
-		roles  []models.Role
+		roles  []roles.Role
 	}
 	tests := []struct {
 		name          string
@@ -410,8 +410,8 @@ func TestAssignRoles(t *testing.T) {
 			name: "Test AssignRoles return output",
 			args: args{
 				userID: "123",
-				roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			prepare: func() {
@@ -427,8 +427,8 @@ func TestAssignRoles(t *testing.T) {
 			name: "Test AssignRoles return error",
 			args: args{
 				userID: "123",
-				roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			prepare: func() {
@@ -468,7 +468,7 @@ func TestAssignRoles(t *testing.T) {
 func TestUnassignRoles(t *testing.T) {
 	type args struct {
 		userID string
-		roles  []models.Role
+		roles  []roles.Role
 	}
 	tests := []struct {
 		name          string
@@ -480,8 +480,8 @@ func TestUnassignRoles(t *testing.T) {
 			name: "Test UnassignRoles return output",
 			args: args{
 				userID: "123",
-				roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			prepare: func() {
@@ -497,8 +497,8 @@ func TestUnassignRoles(t *testing.T) {
 			name: "Test UnassignRoles return error",
 			args: args{
 				userID: "123",
-				roles: []models.Role{
-					{Scope: models.Account, RoleName: models.Member},
+				roles: []roles.Role{
+					{Scope: roles.Account, RoleName: roles.Member},
 				},
 			},
 			prepare: func() {
