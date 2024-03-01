@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/selectel/iam-go"
+	"github.com/selectel/iam-go/service/models"
 	"github.com/selectel/iam-go/service/serviceusers"
 )
 
@@ -43,7 +44,7 @@ func main() {
 		Enabled:  true,
 		Name:     name,
 		Password: password,
-		Roles:    []serviceusers.Role{{Scope: serviceusers.Account, RoleName: serviceusers.Billing}},
+		Roles:    []models.Role{{Scope: models.Account, RoleName: models.Billing}},
 	})
 	// Handle the error.
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/selectel/iam-go"
+	"github.com/selectel/iam-go/service/models"
 	"github.com/selectel/iam-go/service/users"
 )
 
@@ -45,7 +46,7 @@ func main() {
 	var chosenUser *users.User
 	for _, user := range allUsers {
 		for _, role := range user.Roles {
-			if role.RoleName == users.Billing && user.ID != "account_root" {
+			if role.RoleName == models.Billing && user.ID != "account_root" {
 				chosenUser = &user
 				break
 			}
@@ -67,7 +68,7 @@ func main() {
 	err = usersAPI.UnassignRoles(
 		ctx,
 		chosenUser.ID,
-		[]users.Role{{Scope: users.Account, RoleName: users.Billing}},
+		[]models.Role{{Scope: models.Account, RoleName: models.Billing}},
 	)
 
 	// Handle the error.
@@ -83,7 +84,7 @@ func main() {
 	err = usersAPI.AssignRoles(
 		ctx,
 		userID,
-		[]users.Role{{Scope: users.Account, RoleName: users.Billing}},
+		[]models.Role{{Scope: models.Account, RoleName: models.Billing}},
 	)
 
 	// Handle the error.

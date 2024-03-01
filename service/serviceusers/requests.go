@@ -9,6 +9,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/models"
 )
 
 const apiVersion = "iam/v1"
@@ -187,7 +188,7 @@ func (su *ServiceUsers) Update(ctx context.Context, userID string, input UpdateR
 }
 
 // AssignRoles adds new roles for a Service User with the given userID.
-func (su *ServiceUsers) AssignRoles(ctx context.Context, userID string, roles []Role) error {
+func (su *ServiceUsers) AssignRoles(ctx context.Context, userID string, roles []models.Role) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -202,7 +203,7 @@ func (su *ServiceUsers) AssignRoles(ctx context.Context, userID string, roles []
 }
 
 // UnassignRoles removes roles from a Service User with the given userID.
-func (su *ServiceUsers) UnassignRoles(ctx context.Context, userID string, roles []Role) error {
+func (su *ServiceUsers) UnassignRoles(ctx context.Context, userID string, roles []models.Role) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -216,7 +217,7 @@ func (su *ServiceUsers) UnassignRoles(ctx context.Context, userID string, roles 
 	return su.manageRoles(ctx, http.MethodDelete, userID, roles)
 }
 
-func (su *ServiceUsers) manageRoles(ctx context.Context, method string, userID string, roles []Role) error {
+func (su *ServiceUsers) manageRoles(ctx context.Context, method string, userID string, roles []models.Role) error {
 	path, err := url.JoinPath(apiVersion, "service_users", userID, "roles")
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
