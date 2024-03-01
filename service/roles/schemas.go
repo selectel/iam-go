@@ -1,6 +1,6 @@
 package roles
 
-// RoleName represents a role, which can be assigned to a user or service user.
+// Name represents a role, which can be assigned to a user or a service user.
 // For additional information, see
 // https://docs.selectel.ru/control-panel-actions/users-and-roles/user-types-and-roles/#user-roles.
 type Name string
