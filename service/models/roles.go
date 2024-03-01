@@ -1,7 +1,8 @@
 package models
 
-// RoleName represents a role, which can be assigned to a user or service user. 
-// For additional information, see https://docs.selectel.ru/control-panel-actions/users-and-roles/user-types-and-roles/#user-roles
+// RoleName represents a role, which can be assigned to a user or service user.
+// For additional information, see
+// https://docs.selectel.ru/control-panel-actions/users-and-roles/user-types-and-roles/#user-roles.
 type RoleName string
 
 const (
@@ -37,7 +38,6 @@ const (
 	// Account scope.
 	Account Scope = "account"
 )
-
 
 type Role struct {
 	ProjectID string   `json:"project_id,omitempty"`

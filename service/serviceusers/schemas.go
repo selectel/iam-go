@@ -4,9 +4,9 @@ import "github.com/selectel/iam-go/service/models"
 
 // ServiceUser represents a Selectel Service User.
 type ServiceUser struct {
-	ID      string `json:"id"`
-	Enabled bool   `json:"enabled"`
-	Name    string `json:"name"`
+	ID      string        `json:"id"`
+	Enabled bool          `json:"enabled"`
+	Name    string        `json:"name"`
 	Roles   []models.Role `json:"roles"`
 }
 
@@ -26,9 +26,9 @@ type UpdateRequest struct {
 }
 
 type createRequest struct {
-	Enabled  bool   `json:"enabled,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Password string `json:"password,omitempty"`
+	Enabled  bool          `json:"enabled,omitempty"`
+	Name     string        `json:"name,omitempty"`
+	Password string        `json:"password,omitempty"`
 	Roles    []models.Role `json:"roles,omitempty"`
 }
 

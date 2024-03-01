@@ -15,11 +15,11 @@ const (
 
 // User represents a Selectel Panel User.
 type User struct {
-	AuthType   AuthType       `json:"auth_type"`
-	Federation *Federation    `json:"federation,omitempty"`
+	AuthType   AuthType      `json:"auth_type"`
+	Federation *Federation   `json:"federation,omitempty"`
 	Roles      []models.Role `json:"roles"`
-	ID         string         `json:"id"`
-	KeystoneID string         `json:"keystone_id"`
+	ID         string        `json:"id"`
+	KeystoneID string        `json:"keystone_id"`
 }
 
 type Federation struct {
@@ -36,12 +36,12 @@ type CreateRequest struct {
 }
 
 type createRequest struct {
-	AuthType          AuthType       `json:"auth_type,omitempty"`
-	Email             string         `json:"email,omitempty"`
-	Federation        *Federation    `json:"federation,omitempty"`
+	AuthType          AuthType      `json:"auth_type,omitempty"`
+	Email             string        `json:"email,omitempty"`
+	Federation        *Federation   `json:"federation,omitempty"`
 	Roles             []models.Role `json:"roles,omitempty"`
-	SubscriptionsOnly bool           `json:"subscriptions_only"` // Issue, should be hardcoded to `false`
-	Subscriptions     []string       `json:"subscriptions"`      // Issue, should be hardcoded to `[]`
+	SubscriptionsOnly bool          `json:"subscriptions_only"` // Issue, should be hardcoded to `false`
+	Subscriptions     []string      `json:"subscriptions"`      // Issue, should be hardcoded to `[]`
 }
 
 type manageRolesRequest struct {
