@@ -1,16 +1,16 @@
-package ec2
+package s3credentials
 
-// CreatedCredential represents a EC2 credential for the given user.
+// CreatedCredentials represents a S3 Credentials for the given user.
 // It contains "secret_key" field, which appears only once and only after creating.
-type CreatedCredential struct {
+type CreatedCredentials struct {
 	Name      string `json:"name"`
 	ProjectID string `json:"project_id"`
 	AccessKey string `json:"access_key"`
 	SecretKey string `json:"secret_key"`
 }
 
-// Credential represents an EC2 credential for the given user.
-type Credential struct {
+// Credentials represents an S3 Credentials for the given user.
+type Credentials struct {
 	Name      string `json:"name"`
 	ProjectID string `json:"project_id"`
 	AccessKey string `json:"access_key"`
@@ -22,5 +22,5 @@ type createRequest struct {
 }
 
 type listResponse struct {
-	Credentials []Credential `json:"credentials"`
+	Credentials []Credentials `json:"credentials"`
 }

@@ -1,4 +1,4 @@
-package ec2
+package s3credentials
 
 import (
 	"bytes"
@@ -13,20 +13,20 @@ import (
 
 const apiVersion = "iam/v1"
 
-// EC2 is used to communicate with the EC2 Credentials API.
-type EC2 struct {
+// S3Credentials is used to communicate with the S3 Credentials API.
+type S3Credentials struct {
 	baseClient *client.BaseClient
 }
 
-// Initialises EC2 instance with the given client.
-func New(baseClient *client.BaseClient) *EC2 {
-	return &EC2{
+// Initialises S3Credentials instance with the given client.
+func New(baseClient *client.BaseClient) *S3Credentials {
+	return &S3Credentials{
 		baseClient: baseClient,
 	}
 }
 
-// List returns a list of EC2 credentials for the given user.
-func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
+// List returns a list of S3 Credentials for the given user.
+func (s3 *S3Credentials) List(ctx context.Context, userID string) ([]Credentials, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -36,7 +36,7 @@ func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := ec2.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s3.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
 		Path:   path,
@@ -54,13 +54,13 @@ func (ec2 *EC2) List(ctx context.Context, userID string) ([]Credential, error) {
 	return credentials.Credentials, nil
 }
 
-// Create creates a new EC2 credential for the given user.
-func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*CreatedCredential, error) {
+// Create creates a new S3 Credentials for the given user.
+func (s3 *S3Credentials) Create(ctx context.Context, userID, name, projectID string) (*CreatedCredentials, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
 	if name == "" {
-		return nil, iamerrors.Error{Err: iamerrors.ErrCredentialNameRequired, Desc: "No credential name was provided."}
+		return nil, iamerrors.Error{Err: iamerrors.ErrCredentialNameRequired, Desc: "No credentials name was provided."}
 	}
 	if projectID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrProjectIDRequired, Desc: "No projectID was provided."}
@@ -76,7 +76,7 @@ func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*Cr
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := ec2.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s3.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: http.MethodPost,
 		Path:   path,
@@ -86,7 +86,7 @@ func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*Cr
 		return nil, err
 	}
 
-	var createdCredential CreatedCredential
+	var createdCredential CreatedCredentials
 	err = client.UnmarshalJSON(response, &createdCredential)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
@@ -94,8 +94,8 @@ func (ec2 *EC2) Create(ctx context.Context, userID, name, projectID string) (*Cr
 	return &createdCredential, nil
 }
 
-// Delete deletes an EC2 credential for the given user.
-func (ec2 *EC2) Delete(ctx context.Context, userID, accessKey string) error {
+// Delete deletes an S3 Credentials for the given user.
+func (s3 *S3Credentials) Delete(ctx context.Context, userID, accessKey string) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -107,7 +107,7 @@ func (ec2 *EC2) Delete(ctx context.Context, userID, accessKey string) error {
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
-	_, err = ec2.baseClient.DoRequest(ctx, client.DoRequestInput{
+	_, err = s3.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodDelete,
 		Path:   path,

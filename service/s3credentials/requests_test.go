@@ -1,4 +1,4 @@
-package ec2
+package s3credentials
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/ec2/testdata"
+	"github.com/selectel/iam-go/service/s3credentials/testdata"
 )
 
 const (
@@ -27,7 +27,7 @@ func TestList(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse []Credential
+		expectedResponse []Credentials
 		expectedError    error
 	}{
 		{
@@ -42,7 +42,7 @@ func TestList(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: []Credential{
+			expectedResponse: []Credentials{
 				{
 					Name:      "12345",
 					ProjectID: "test-project",
@@ -73,19 +73,19 @@ func TestList(t *testing.T) {
 			assert := assert.New(t)
 			require := require.New(t)
 
-			ec2CredAPI := New(&client.BaseClient{
+			s3CredAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
 				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
 			})
 
-			httpmock.ActivateNonDefault(ec2CredAPI.baseClient.HTTPClient)
+			httpmock.ActivateNonDefault(s3CredAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
 			tt.prepare()
 
 			ctx := context.Background()
-			actualResponse, err := ec2CredAPI.List(ctx, tt.args.userID)
+			actualResponse, err := s3CredAPI.List(ctx, tt.args.userID)
 
 			require.ErrorIs(err, tt.expectedError)
 
@@ -104,7 +104,7 @@ func TestCreate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *CreatedCredential
+		expectedResponse *CreatedCredentials
 		expectedError    error
 	}{
 		{
@@ -121,7 +121,7 @@ func TestCreate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &CreatedCredential{
+			expectedResponse: &CreatedCredentials{
 				Name:      "12345",
 				ProjectID: "test-project",
 				AccessKey: "test-access-key",
@@ -153,19 +153,19 @@ func TestCreate(t *testing.T) {
 			assert := assert.New(t)
 			require := require.New(t)
 
-			ec2CredAPI := New(&client.BaseClient{
+			s3CredAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
 				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
 			})
 
-			httpmock.ActivateNonDefault(ec2CredAPI.baseClient.HTTPClient)
+			httpmock.ActivateNonDefault(s3CredAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
 			tt.prepare()
 
 			ctx := context.Background()
-			actualResponse, err := ec2CredAPI.Create(ctx, tt.args.userID, tt.args.name, tt.args.projectID)
+			actualResponse, err := s3CredAPI.Create(ctx, tt.args.userID, tt.args.name, tt.args.projectID)
 
 			require.ErrorIs(err, tt.expectedError)
 
@@ -224,19 +224,19 @@ func TestDelete(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			require := require.New(t)
 
-			ec2CredAPI := New(&client.BaseClient{
+			s3CredAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
 				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
 			})
 
-			httpmock.ActivateNonDefault(ec2CredAPI.baseClient.HTTPClient)
+			httpmock.ActivateNonDefault(s3CredAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
 			tt.prepare()
 
 			ctx := context.Background()
-			err := ec2CredAPI.Delete(ctx, tt.args.userID, tt.args.accessKey)
+			err := s3CredAPI.Delete(ctx, tt.args.userID, tt.args.accessKey)
 
 			require.ErrorIs(err, tt.expectedError)
 		})
