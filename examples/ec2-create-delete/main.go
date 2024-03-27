@@ -14,13 +14,13 @@ func main() {
 	// Prefix to be added to User-Agent.
 	prefix := "iam-go"
 
-	// ID of the User to create EC2 credential for.
+	// ID of the User to create S3 Credentials for.
 	userID := "a1b2c3..."
 
-	// Name of the EC2 credential to create.
-	name := "my-ec2-credential"
+	// Name of the S3 Credentials to create.
+	name := "my-s3-credentials"
 
-	// Project ID to create the EC2 credential for.
+	// Project ID to create the S3 Credentials for.
 	projectID := "a1b2c3..."
 
 	// Create a new IAM client.
@@ -34,14 +34,14 @@ func main() {
 		return
 	}
 
-	// Get the EC2 Credentials APIinstance.
-	ec2CredAPI := iamClient.EC2
+	// Get the S3 Credentials API instance.
+	s3CredAPI := iamClient.S3Credentials
 
 	// Prepare an empty context.
 	ctx := context.Background()
 
-	// Create a new EC2 credential for the Service User.
-	credential, err := ec2CredAPI.Create(
+	// Create a new S3 Credentials for the Service User.
+	credentials, err := s3CredAPI.Create(
 		ctx,
 		userID,
 		name,
@@ -53,12 +53,13 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Step 1: Created credential Secret Key: %s Access Key: %s\n", credential.SecretKey, credential.AccessKey)
+	fmt.Printf("Step 1: Created credentials Secret Key: %s Access Key: %s\n", credentials.SecretKey,
+		credentials.AccessKey)
 
-	// // Delete an existing EC2 credential.
-	// err = ec2CredAPI.Delete(ctx, &ec2.DeleteInput{
+	// // Delete an existing S3 Credentials.
+	// err = s3CredAPI.Delete(ctx, &s3credentials.DeleteInput{
 	// 	UserID:    userID,
-	// 	AccessKey: credential.AccessKey,
+	// 	AccessKey: credentials.AccessKey,
 	// })
 
 	// // Handle the error.
@@ -66,5 +67,5 @@ func main() {
 	// 	fmt.Println(err)
 	// }
 
-	// fmt.Printf("Step 2: Deleted credential")
+	// fmt.Printf("Step 2: Deleted credentials")
 }

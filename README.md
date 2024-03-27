@@ -21,7 +21,7 @@ You can use this library to work with the following objects of the Selectel IAM 
 
 * [users](https://pkg.go.dev/github.com/selectel/iam-go/service/users)
 * [serviceusers](https://pkg.go.dev/github.com/selectel/iam-go/service/serviceusers)
-* [ec2](https://pkg.go.dev/github.com/selectel/iam-go/service/ec2)
+* [s3credentials](https://pkg.go.dev/github.com/selectel/iam-go/service/s3credentials)
 
 ### Installation
 

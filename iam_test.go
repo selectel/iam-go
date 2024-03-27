@@ -10,7 +10,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/ec2"
+	"github.com/selectel/iam-go/service/s3credentials"
 	"github.com/selectel/iam-go/service/serviceusers"
 	"github.com/selectel/iam-go/service/users"
 )
@@ -56,10 +56,10 @@ func TestNew(t *testing.T) {
 					authOpts: &AuthOpts{
 						KeystoneToken: testToken,
 					},
-					baseClient:   baseClient,
-					Users:        users.New(baseClient),
-					ServiceUsers: serviceusers.New(baseClient),
-					EC2:          ec2.New(baseClient),
+					baseClient:    baseClient,
+					Users:         users.New(baseClient),
+					ServiceUsers:  serviceusers.New(baseClient),
+					S3Credentials: s3credentials.New(baseClient),
 				}
 			},
 			expectedError: nil,
@@ -97,10 +97,10 @@ func TestNew(t *testing.T) {
 					authOpts: &AuthOpts{
 						KeystoneToken: testToken,
 					},
-					baseClient:   baseClient,
-					Users:        users.New(baseClient),
-					ServiceUsers: serviceusers.New(baseClient),
-					EC2:          ec2.New(baseClient),
+					baseClient:    baseClient,
+					Users:         users.New(baseClient),
+					ServiceUsers:  serviceusers.New(baseClient),
+					S3Credentials: s3credentials.New(baseClient),
 				}
 			},
 			expectedError: nil,
@@ -131,10 +131,10 @@ func TestNew(t *testing.T) {
 					authOpts: &AuthOpts{
 						KeystoneToken: testToken,
 					},
-					baseClient:   baseClient,
-					Users:        users.New(baseClient),
-					ServiceUsers: serviceusers.New(baseClient),
-					EC2:          ec2.New(baseClient),
+					baseClient:    baseClient,
+					Users:         users.New(baseClient),
+					ServiceUsers:  serviceusers.New(baseClient),
+					S3Credentials: s3credentials.New(baseClient),
 				}
 			},
 			expectedError: nil,
