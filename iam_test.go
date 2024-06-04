@@ -10,6 +10,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/groups"
 	"github.com/selectel/iam-go/service/s3credentials"
 	"github.com/selectel/iam-go/service/serviceusers"
 	"github.com/selectel/iam-go/service/users"
@@ -59,6 +60,7 @@ func TestNew(t *testing.T) {
 					baseClient:    baseClient,
 					Users:         users.New(baseClient),
 					ServiceUsers:  serviceusers.New(baseClient),
+					Groups:        groups.New(baseClient),
 					S3Credentials: s3credentials.New(baseClient),
 				}
 			},
@@ -100,6 +102,7 @@ func TestNew(t *testing.T) {
 					baseClient:    baseClient,
 					Users:         users.New(baseClient),
 					ServiceUsers:  serviceusers.New(baseClient),
+					Groups:        groups.New(baseClient),
 					S3Credentials: s3credentials.New(baseClient),
 				}
 			},
@@ -134,6 +137,7 @@ func TestNew(t *testing.T) {
 					baseClient:    baseClient,
 					Users:         users.New(baseClient),
 					ServiceUsers:  serviceusers.New(baseClient),
+					Groups:        groups.New(baseClient),
 					S3Credentials: s3credentials.New(baseClient),
 				}
 			},

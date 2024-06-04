@@ -2,7 +2,7 @@
 
 This example program demonstrates how to manage creating, updating and deleting Service User.
 
-The part of deleting a just-created Service User is commented.
+The part of deleting a just-created Service User is disabled by `deleteAfterRun` variable.
 
 As an example, the Billing Role will be assigned for a new Service User and in update method this Service User will be set to _Disabled_.
 
@@ -11,8 +11,8 @@ As an example, the Billing Role will be assigned for a new Service User and in u
 Running this file will execute the following operations:
 
 1. **Create:** Create is used to create a new Service User.
-2. **Update** Update sets _Enabled_ property of the just-created Service User to _false_
-3. **(Delete):** _(commented by default)_ Delete deletes a just-created Service User.
+2. **Update:** Update sets _Enabled_ property of the just-created Service User to _false_
+3. **(Delete):** _(disabled by default)_ Delete deletes a just-created Service User.
 
 You should see an output like the following (with all operations enabled):
 

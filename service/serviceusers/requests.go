@@ -27,7 +27,7 @@ func New(baseClient *client.BaseClient) *ServiceUsers {
 }
 
 // List returns a list of Service Users for the account.
-func (su *ServiceUsers) List(ctx context.Context) ([]ServiceUser, error) {
+func (su *ServiceUsers) List(ctx context.Context) ([]ServiceUserListResponse, error) {
 	path, err := url.JoinPath(apiVersion, "service_users")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
@@ -81,7 +81,7 @@ func (su *ServiceUsers) Get(ctx context.Context, userID string) (*ServiceUser, e
 }
 
 // Create creates a new Service User.
-func (su *ServiceUsers) Create(ctx context.Context, input CreateRequest) (*ServiceUser, error) {
+func (su *ServiceUsers) Create(ctx context.Context, input CreateRequest) (*CreateResponse, error) {
 	if input.Name == "" {
 		return nil, iamerrors.Error{
 			Err: iamerrors.ErrServiceUserNameRequired, Desc: "No name for Service User was provided.",
@@ -101,6 +101,7 @@ func (su *ServiceUsers) Create(ctx context.Context, input CreateRequest) (*Servi
 		Enabled:  input.Enabled,
 		Name:     input.Name,
 		Password: input.Password,
+		GroupIds: input.GroupIDs,
 		Roles:    input.Roles,
 	})
 	if err != nil {
@@ -117,7 +118,7 @@ func (su *ServiceUsers) Create(ctx context.Context, input CreateRequest) (*Servi
 		return nil, err
 	}
 
-	var createdUser ServiceUser
+	var createdUser CreateResponse
 	err = client.UnmarshalJSON(response, &createdUser)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}

@@ -10,7 +10,7 @@ Running this file will execute the following operations:
 
 1. **List:** List is used to retrieve all Users. The first one, who has a billing role, will be selected as 'transferer'.
 2. **UnassignRole:** UnassinRole will remove Billing role from chosen user.
-3. **AssignRole** AssignRole will add Billing role to the predefined User ID.
+3. **AssignRole:** AssignRole will add Billing role to the predefined User ID.
 
 You should see an output like the following:
 

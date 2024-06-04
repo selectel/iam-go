@@ -25,19 +25,19 @@ func TestList(t *testing.T) {
 	tests := []struct {
 		name             string
 		prepare          func()
-		expectedResponse []ServiceUser
+		expectedResponse []ServiceUserListResponse
 		expectedError    error
 	}{
 		{
-			name: "Test List return output",
+			name: "ok",
 			prepare: func() {
 				httpmock.RegisterResponder(
 					http.MethodGet, testdata.TestURL+serviceUsersURL, func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestGetUsersResponse)
+						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestListUsersResponse)
 						return resp, nil
 					})
 			},
-			expectedResponse: []ServiceUser{
+			expectedResponse: []ServiceUserListResponse{
 				{
 					Name:    "test",
 					Enabled: true,
@@ -50,7 +50,7 @@ func TestList(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			name: "Test List return error",
+			name: "error",
 			prepare: func() {
 				httpmock.RegisterResponder(
 					http.MethodGet, testdata.TestURL+serviceUsersURL, func(r *http.Request) (*http.Response, error) {
@@ -118,6 +118,9 @@ func TestGet(t *testing.T) {
 				ID:      "123",
 				Roles: []roles.Role{
 					{Scope: roles.Account, RoleName: roles.Member},
+				},
+				Groups: []Group{
+					{Name: "123", ID: "96a60e7b9e9e48308eed46269f9a147b", Roles: []roles.Role{}},
 				},
 			},
 			expectedError: nil,
@@ -242,7 +245,7 @@ func TestCreate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *ServiceUser
+		expectedResponse *CreateResponse
 		expectedError    error
 	}{
 		{
@@ -262,7 +265,7 @@ func TestCreate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &ServiceUser{
+			expectedResponse: &CreateResponse{
 				Name:    "test",
 				Enabled: true,
 				ID:      "123",

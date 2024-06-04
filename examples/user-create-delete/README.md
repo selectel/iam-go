@@ -2,7 +2,7 @@
 
 This example program demonstrates how to manage creating and deleting User.
 
-The part of deleting a just-created User is commented.
+The part of deleting a just-created User is disabled by `deleteAfterRun` variable.
 
 As an example, the Billing Role will be assigned for a new User.
 

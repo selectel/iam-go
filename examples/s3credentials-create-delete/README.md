@@ -2,14 +2,14 @@
 
 This example program demonstrates how to manage creating and deleting S3 Credentials for a Service User.
 
-The part of deleting a just-created credentials is commented.
+The part of deleting a just-created credentials is disabled by `deleteAfterRun` variable.
 
 ## Running this example
 
 Running this file will execute the following operations:
 
 1. **Create:** Create is used to create a new S3 Credentials. It is implied, that the Service User ID is known.
-2. **(Delete):** _(commented by default)_ Delete deletes a just-created credentials on a previous step.
+2. **(Delete):** _(disabled by default)_ Delete deletes a just-created credentials on a previous step.
 
 You should see an output like the following (with both operations enabled):
 

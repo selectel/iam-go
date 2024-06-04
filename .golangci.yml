@@ -76,6 +76,13 @@ linters-settings:
   
   nolintlint:
     allow-leading-space: false
+
+  revive:
+    rules:
+      - name: var-naming
+        arguments:
+          # they outplayed themselves, and "IDS" actually means "allow 'Ids' in var name"
+          - [ "IDS" ] # AllowList"
   
   tagliatelle:
     case:
