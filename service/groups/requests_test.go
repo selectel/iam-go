@@ -27,7 +27,7 @@ func TestList(t *testing.T) {
 	tests := []struct {
 		name             string
 		prepare          func()
-		expectedResponse []GroupListResponse
+		expectedResponse *ListResponse
 		expectedError    error
 	}{
 		{
@@ -39,7 +39,7 @@ func TestList(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: []GroupListResponse{
+			expectedResponse: &ListResponse{[]Group{
 				{
 					ID:          "123",
 					Name:        "test_name",
@@ -48,7 +48,7 @@ func TestList(t *testing.T) {
 						{Scope: roles.Account, RoleName: roles.Member},
 					},
 				},
-			},
+			}},
 			expectedError: nil,
 		},
 		{
@@ -99,7 +99,7 @@ func TestGet(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *Group
+		expectedResponse *GetResponse
 		expectedError    error
 	}{
 		{
@@ -114,12 +114,14 @@ func TestGet(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &Group{
-				ID:          "123",
-				Name:        "test_name",
-				Description: "test_description",
-				Roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+			expectedResponse: &GetResponse{
+				Group: Group{
+					ID:          "123",
+					Name:        "test_name",
+					Description: "test_description",
+					Roles: []roles.Role{
+						{Scope: roles.Account, RoleName: roles.Member},
+					},
 				},
 				ServiceUsers: []ServiceUser{
 					{
@@ -255,7 +257,7 @@ func TestCreate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *Group
+		expectedResponse *CreateResponse
 		expectedError    error
 	}{
 		{
@@ -271,11 +273,13 @@ func TestCreate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &Group{
-				ID:           "123",
-				Name:         "test_name",
-				Description:  "test_description",
-				Roles:        []roles.Role{},
+			expectedResponse: &CreateResponse{
+				Group: Group{
+					ID:          "123",
+					Name:        "test_name",
+					Description: "test_description",
+					Roles:       []roles.Role{},
+				},
 				ServiceUsers: []ServiceUser{},
 				Users:        []User{},
 			},
@@ -337,7 +341,7 @@ func TestUpdate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *Group
+		expectedResponse *UpdateResponse
 		expectedError    error
 	}{
 		{
@@ -354,11 +358,13 @@ func TestUpdate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &Group{
-				ID:           "123",
-				Name:         "test_name",
-				Description:  "test_description",
-				Roles:        []roles.Role{},
+			expectedResponse: &UpdateResponse{
+				Group: Group{
+					ID:          "123",
+					Name:        "test_name",
+					Description: "test_description",
+					Roles:       []roles.Role{},
+				},
 				ServiceUsers: []ServiceUser{},
 				Users:        []User{},
 			},
@@ -400,7 +406,7 @@ func TestUpdate(t *testing.T) {
 			tt.prepare()
 			ctx := context.Background()
 
-			actual, err := groupsAPI.Update(ctx, tt.args.groupID, ModifyRequest{
+			actual, err := groupsAPI.Update(ctx, tt.args.groupID, UpdateRequest{
 				Name:        tt.args.name,
 				Description: tt.args.description,
 			})

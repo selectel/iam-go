@@ -27,7 +27,7 @@ func TestList(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse []Credentials
+		expectedResponse *ListResponse
 		expectedError    error
 	}{
 		{
@@ -42,13 +42,13 @@ func TestList(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: []Credentials{
+			expectedResponse: &ListResponse{[]Credential{
 				{
 					Name:      "12345",
 					ProjectID: "test-project",
 					AccessKey: "test-access-key",
 				},
-			},
+			}},
 			expectedError: nil,
 		},
 		{
@@ -104,7 +104,7 @@ func TestCreate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *CreatedCredentials
+		expectedResponse *CreateResponse
 		expectedError    error
 	}{
 		{
@@ -121,10 +121,12 @@ func TestCreate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &CreatedCredentials{
-				Name:      "12345",
-				ProjectID: "test-project",
-				AccessKey: "test-access-key",
+			expectedResponse: &CreateResponse{
+				Credential: Credential{
+					Name:      "12345",
+					ProjectID: "test-project",
+					AccessKey: "test-access-key",
+				},
 				SecretKey: "test-secret-key",
 			},
 			expectedError: nil,

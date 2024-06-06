@@ -25,7 +25,7 @@ func TestList(t *testing.T) {
 	tests := []struct {
 		name             string
 		prepare          func()
-		expectedResponse []ServiceUserListResponse
+		expectedResponse *ListResponse
 		expectedError    error
 	}{
 		{
@@ -37,7 +37,7 @@ func TestList(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: []ServiceUserListResponse{
+			expectedResponse: &ListResponse{[]ServiceUser{
 				{
 					Name:    "test",
 					Enabled: true,
@@ -46,7 +46,7 @@ func TestList(t *testing.T) {
 						{Scope: roles.Account, RoleName: roles.Member},
 					},
 				},
-			},
+			}},
 			expectedError: nil,
 		},
 		{
@@ -97,7 +97,7 @@ func TestGet(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *ServiceUser
+		expectedResponse *GetResponse
 		expectedError    error
 	}{
 		{
@@ -112,12 +112,14 @@ func TestGet(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &ServiceUser{
-				Name:    "test",
-				Enabled: true,
-				ID:      "123",
-				Roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+			expectedResponse: &GetResponse{
+				ServiceUser: ServiceUser{
+					Name:    "test",
+					Enabled: true,
+					ID:      "123",
+					Roles: []roles.Role{
+						{Scope: roles.Account, RoleName: roles.Member},
+					},
 				},
 				Groups: []Group{
 					{Name: "123", ID: "96a60e7b9e9e48308eed46269f9a147b", Roles: []roles.Role{}},
@@ -266,11 +268,13 @@ func TestCreate(t *testing.T) {
 					})
 			},
 			expectedResponse: &CreateResponse{
-				Name:    "test",
-				Enabled: true,
-				ID:      "123",
-				Roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+				ServiceUser: ServiceUser{
+					Name:    "test",
+					Enabled: true,
+					ID:      "123",
+					Roles: []roles.Role{
+						{Scope: roles.Account, RoleName: roles.Member},
+					},
 				},
 			},
 			expectedError: nil,
@@ -360,7 +364,7 @@ func TestUpdate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *ServiceUser
+		expectedResponse *UpdateResponse
 		expectedError    error
 	}{
 		{
@@ -378,10 +382,12 @@ func TestUpdate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &ServiceUser{
-				Name:    "test1",
-				Enabled: true,
-				ID:      "123",
+			expectedResponse: &UpdateResponse{
+				ServiceUser: ServiceUser{
+					Name:    "test1",
+					Enabled: true,
+					ID:      "123",
+				},
 			},
 			expectedError: nil,
 		},

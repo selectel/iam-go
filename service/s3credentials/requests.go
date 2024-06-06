@@ -13,20 +13,20 @@ import (
 
 const apiVersion = "iam/v1"
 
-// S3Credentials is used to communicate with the S3 Credentials API.
-type S3Credentials struct {
+// Service is used to communicate with the S3 Credentials API.
+type Service struct {
 	baseClient *client.BaseClient
 }
 
-// Initialises S3Credentials instance with the given client.
-func New(baseClient *client.BaseClient) *S3Credentials {
-	return &S3Credentials{
+// New initialises Service instance with the given client.
+func New(baseClient *client.BaseClient) *Service {
+	return &Service{
 		baseClient: baseClient,
 	}
 }
 
 // List returns a list of S3 Credentials for the given user.
-func (s3 *S3Credentials) List(ctx context.Context, userID string) ([]Credentials, error) {
+func (s *Service) List(ctx context.Context, userID string) (*ListResponse, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -36,7 +36,7 @@ func (s3 *S3Credentials) List(ctx context.Context, userID string) ([]Credentials
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := s3.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
 		Path:   path,
@@ -46,16 +46,16 @@ func (s3 *S3Credentials) List(ctx context.Context, userID string) ([]Credentials
 		return nil, err
 	}
 
-	var credentials listResponse
+	var credentials ListResponse
 	err = client.UnmarshalJSON(response, &credentials)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
-	return credentials.Credentials, nil
+	return &credentials, nil
 }
 
 // Create creates a new S3 Credentials for the given user.
-func (s3 *S3Credentials) Create(ctx context.Context, userID, name, projectID string) (*CreatedCredentials, error) {
+func (s *Service) Create(ctx context.Context, userID, name, projectID string) (*CreateResponse, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -76,7 +76,7 @@ func (s3 *S3Credentials) Create(ctx context.Context, userID, name, projectID str
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := s3.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: http.MethodPost,
 		Path:   path,
@@ -86,7 +86,7 @@ func (s3 *S3Credentials) Create(ctx context.Context, userID, name, projectID str
 		return nil, err
 	}
 
-	var createdCredential CreatedCredentials
+	var createdCredential CreateResponse
 	err = client.UnmarshalJSON(response, &createdCredential)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
@@ -95,7 +95,7 @@ func (s3 *S3Credentials) Create(ctx context.Context, userID, name, projectID str
 }
 
 // Delete deletes an S3 Credentials for the given user.
-func (s3 *S3Credentials) Delete(ctx context.Context, userID, accessKey string) error {
+func (s *Service) Delete(ctx context.Context, userID, accessKey string) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -107,7 +107,7 @@ func (s3 *S3Credentials) Delete(ctx context.Context, userID, accessKey string) e
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
-	_, err = s3.baseClient.DoRequest(ctx, client.DoRequestInput{
+	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodDelete,
 		Path:   path,

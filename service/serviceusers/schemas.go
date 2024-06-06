@@ -2,28 +2,37 @@ package serviceusers
 
 import "github.com/selectel/iam-go/service/roles"
 
-type listResponse struct {
-	Users []ServiceUserListResponse `json:"users"`
+// ListResponse represents all Service Users in account.
+type ListResponse struct {
+	Users []ServiceUser `json:"users"`
 }
 
-// ServiceUserListResponse represents a Selectel Service Users in list response.
-type ServiceUserListResponse struct {
-	ID      string       `json:"id"`
-	Enabled bool         `json:"enabled"`
-	Name    string       `json:"name"`
-	Roles   []roles.Role `json:"roles"`
-}
-
-// ServiceUser represents a Selectel Service User.
+// ServiceUser represents basic information about a Selectel Service User.
 type ServiceUser struct {
 	ID      string       `json:"id"`
 	Enabled bool         `json:"enabled"`
 	Name    string       `json:"name"`
 	Roles   []roles.Role `json:"roles"`
-	Groups  []Group      `json:"groups"`
 }
 
-// Group represents a Group for users.
+// GetResponse represents a Selectel Service User.
+type GetResponse struct {
+	ServiceUser
+	Groups []Group `json:"groups"`
+}
+
+// CreateResponse represents a Selectel Service User.
+type CreateResponse struct {
+	ServiceUser
+}
+
+// UpdateResponse represents a Selectel Service User.
+type UpdateResponse struct {
+	ServiceUser
+	Groups []Group `json:"groups"`
+}
+
+// Group represents information about the Group the user is a member of.
 type Group struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
@@ -38,13 +47,6 @@ type CreateRequest struct {
 	Password string
 	GroupIDs []string
 	Roles    []roles.Role
-}
-
-type CreateResponse struct {
-	ID      string       `json:"id"`
-	Enabled bool         `json:"enabled"`
-	Name    string       `json:"name"`
-	Roles   []roles.Role `json:"roles"`
 }
 
 // UpdateRequest is used to set options for Update method.

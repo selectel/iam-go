@@ -47,16 +47,16 @@ type Client struct {
 	baseClient *baseclient.BaseClient
 
 	// Users instance is used to make requests against Selectel IAM API	and manage Panel Users.
-	Users *users.Users
+	Users *users.Service
 
 	// ServiceUsers instance is used to make requests against Selectel IAM API and manage Service Users.
-	ServiceUsers *serviceusers.ServiceUsers
+	ServiceUsers *serviceusers.Service
 
 	// Groups instance is used to make requests against Selectel IAM API and manage Groups of users.
-	Groups *groups.Groups
+	Groups *groups.Service
 
 	// S3Credentials instance is used to make requests against Selectel IAM API and manage S3 Credentials.
-	S3Credentials *s3credentials.S3Credentials
+	S3Credentials *s3credentials.Service
 }
 
 type AuthOpts struct {

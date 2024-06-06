@@ -14,26 +14,26 @@ import (
 
 const apiVersion = "iam/v1"
 
-// Users is used to communicate with the Users API.
-type Users struct {
+// Service is used to communicate with the Users API.
+type Service struct {
 	baseClient *client.BaseClient
 }
 
-// Initialises Users with the given client.
-func New(baseClient *client.BaseClient) *Users {
-	return &Users{
+// New initialises Service with the given client.
+func New(baseClient *client.BaseClient) *Service {
+	return &Service{
 		baseClient: baseClient,
 	}
 }
 
 // List returns a list of Users for the account.
-func (u *Users) List(ctx context.Context) ([]UserListResponse, error) {
+func (s *Service) List(ctx context.Context) (*ListResponse, error) {
 	path, err := url.JoinPath(apiVersion, "users")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
 		Path:   path,
@@ -43,16 +43,16 @@ func (u *Users) List(ctx context.Context) ([]UserListResponse, error) {
 		return nil, err
 	}
 
-	var users listResponse
+	var users ListResponse
 	err = client.UnmarshalJSON(response, &users)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
-	return users.Users, nil
+	return &users, nil
 }
 
 // Get returns an info of User with the selectel userID.
-func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
+func (s *Service) Get(ctx context.Context, userID string) (*GetResponse, error) {
 	if userID == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -62,7 +62,7 @@ func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodGet,
 		Path:   path,
@@ -72,7 +72,7 @@ func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
 		return nil, err
 	}
 
-	var user User
+	var user GetResponse
 	err = client.UnmarshalJSON(response, &user)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
@@ -81,7 +81,7 @@ func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
 }
 
 // Create creates a new User.
-func (u *Users) Create(ctx context.Context, input CreateRequest) (*CreateResponse, error) {
+func (s *Service) Create(ctx context.Context, input CreateRequest) (*CreateResponse, error) {
 	if input.Email == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserEmailRequired, Desc: "No email for User was provided."}
 	}
@@ -104,7 +104,7 @@ func (u *Users) Create(ctx context.Context, input CreateRequest) (*CreateRespons
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: http.MethodPost,
 		Path:   path,
@@ -123,7 +123,7 @@ func (u *Users) Create(ctx context.Context, input CreateRequest) (*CreateRespons
 }
 
 // Delete deletes a User from the account.
-func (u *Users) Delete(ctx context.Context, userID string) error {
+func (s *Service) Delete(ctx context.Context, userID string) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -133,7 +133,7 @@ func (u *Users) Delete(ctx context.Context, userID string) error {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
+	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodDelete,
 		Path:   path,
@@ -147,7 +147,7 @@ func (u *Users) Delete(ctx context.Context, userID string) error {
 }
 
 // ResendInvite sends a confirmation email again.
-func (u *Users) ResendInvite(ctx context.Context, userID string) error {
+func (s *Service) ResendInvite(ctx context.Context, userID string) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -157,7 +157,7 @@ func (u *Users) ResendInvite(ctx context.Context, userID string) error {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
+	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
 		Method: http.MethodPatch,
 		Path:   path,
@@ -171,7 +171,7 @@ func (u *Users) ResendInvite(ctx context.Context, userID string) error {
 }
 
 // AssignRoles adds new roles for a User with the given userID.
-func (u *Users) AssignRoles(ctx context.Context, userID string, roles []roles.Role) error {
+func (s *Service) AssignRoles(ctx context.Context, userID string, roles []roles.Role) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -180,11 +180,11 @@ func (u *Users) AssignRoles(ctx context.Context, userID string, roles []roles.Ro
 		return iamerrors.Error{Err: iamerrors.ErrUserRolesRequired, Desc: "No roles for User was provided."}
 	}
 
-	return u.manageRoles(ctx, http.MethodPut, userID, roles)
+	return s.manageRoles(ctx, http.MethodPut, userID, roles)
 }
 
 // UnassignRoles removes roles from a User with the given userID.
-func (u *Users) UnassignRoles(ctx context.Context, userID string, roles []roles.Role) error {
+func (s *Service) UnassignRoles(ctx context.Context, userID string, roles []roles.Role) error {
 	if userID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
 	}
@@ -192,10 +192,10 @@ func (u *Users) UnassignRoles(ctx context.Context, userID string, roles []roles.
 		return iamerrors.Error{Err: iamerrors.ErrUserRolesRequired, Desc: "No roles for User was provided."}
 	}
 
-	return u.manageRoles(ctx, http.MethodDelete, userID, roles)
+	return s.manageRoles(ctx, http.MethodDelete, userID, roles)
 }
 
-func (u *Users) manageRoles(ctx context.Context, method string, userID string, roles []roles.Role) error {
+func (s *Service) manageRoles(ctx context.Context, method string, userID string, roles []roles.Role) error {
 	path, err := url.JoinPath(apiVersion, "users", userID, "roles")
 	if err != nil {
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
@@ -207,7 +207,7 @@ func (u *Users) manageRoles(ctx context.Context, method string, userID string, r
 		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
+	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
 		Method: method,
 		Path:   path,

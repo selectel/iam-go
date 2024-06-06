@@ -26,7 +26,7 @@ func TestList(t *testing.T) {
 	tests := []struct {
 		name             string
 		prepare          func()
-		expectedResponse []UserListResponse
+		expectedResponse *ListResponse
 		expectedError    error
 	}{
 		{
@@ -38,7 +38,7 @@ func TestList(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: []UserListResponse{
+			expectedResponse: &ListResponse{[]User{
 				{
 					AuthType:   "local",
 					KeystoneID: "123",
@@ -47,7 +47,7 @@ func TestList(t *testing.T) {
 						{Scope: roles.Account, RoleName: roles.Member},
 					},
 				},
-			},
+			}},
 			expectedError: nil,
 		},
 		{
@@ -98,7 +98,7 @@ func TestGet(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *User
+		expectedResponse *GetResponse
 		expectedError    error
 	}{
 		{
@@ -113,12 +113,14 @@ func TestGet(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &User{
-				AuthType:   "local",
-				KeystoneID: "123",
-				ID:         "123",
-				Roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+			expectedResponse: &GetResponse{
+				User: User{
+					AuthType:   "local",
+					KeystoneID: "123",
+					ID:         "123",
+					Roles: []roles.Role{
+						{Scope: roles.Account, RoleName: roles.Member},
+					},
 				},
 				Groups: []Group{
 					{Name: "123", ID: "96a60e7b9e9e48308eed46269f9a147b", Roles: []roles.Role{}},
@@ -267,15 +269,17 @@ func TestCreate(t *testing.T) {
 					})
 			},
 			expectedResponse: &CreateResponse{
-				AuthType: "federated",
-				Federation: &Federation{
-					ExternalID: "123",
+				User: User{
+					AuthType: "federated",
+					Federation: &Federation{
+						ExternalID: "123",
+						ID:         "123",
+					},
 					ID:         "123",
-				},
-				ID:         "123",
-				KeystoneID: "123",
-				Roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					KeystoneID: "123",
+					Roles: []roles.Role{
+						{Scope: roles.Account, RoleName: roles.Member},
+					},
 				},
 			},
 			expectedError: nil,
@@ -309,7 +313,6 @@ func TestCreate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			assert := assert.New(t)
 			require := require.New(t)
-
 			usersAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
 				APIUrl:     testdata.TestURL,
@@ -318,15 +321,14 @@ func TestCreate(t *testing.T) {
 
 			httpmock.ActivateNonDefault(usersAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
-
 			tt.prepare()
 			ctx := context.Background()
 
-			//nolint:gosec // This is just a test
+			federation := tt.args.federation
 			actual, err := usersAPI.Create(ctx, CreateRequest{
 				AuthType:   tt.args.authType,
 				Email:      tt.args.email,
-				Federation: &tt.args.federation,
+				Federation: &federation,
 				Roles:      tt.args.roles,
 			})
 			require.ErrorIs(err, tt.expectedError)
