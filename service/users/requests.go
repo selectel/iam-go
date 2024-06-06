@@ -27,7 +27,7 @@ func New(baseClient *client.BaseClient) *Users {
 }
 
 // List returns a list of Users for the account.
-func (u *Users) List(ctx context.Context) ([]User, error) {
+func (u *Users) List(ctx context.Context) ([]UserListResponse, error) {
 	path, err := url.JoinPath(apiVersion, "users")
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
@@ -81,7 +81,7 @@ func (u *Users) Get(ctx context.Context, userID string) (*User, error) {
 }
 
 // Create creates a new User.
-func (u *Users) Create(ctx context.Context, input CreateRequest) (*User, error) {
+func (u *Users) Create(ctx context.Context, input CreateRequest) (*CreateResponse, error) {
 	if input.Email == "" {
 		return nil, iamerrors.Error{Err: iamerrors.ErrUserEmailRequired, Desc: "No email for User was provided."}
 	}
@@ -96,6 +96,7 @@ func (u *Users) Create(ctx context.Context, input CreateRequest) (*User, error) 
 		Email:             input.Email,
 		Federation:        input.Federation,
 		Roles:             input.Roles,
+		GroupIds:          input.GroupIDs,
 		SubscriptionsOnly: false,      // Issue, should be hardcoded
 		Subscriptions:     []string{}, // Issue, should be hardcoded
 	})
@@ -113,7 +114,7 @@ func (u *Users) Create(ctx context.Context, input CreateRequest) (*User, error) 
 		return nil, err
 	}
 
-	var createdUser User
+	var createdUser CreateResponse
 	err = client.UnmarshalJSON(response, &createdUser)
 	if err != nil {
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}

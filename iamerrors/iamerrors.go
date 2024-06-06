@@ -21,6 +21,14 @@ var (
 
 	ErrUserIDRequired    = errors.New("USER_ID_REQUIRED")
 	ErrProjectIDRequired = errors.New("PROJECT_ID_REQUIRED")
+	ErrGroupIDRequired   = errors.New("GROUP_ID_REQUIRED")
+
+	ErrGroupNameRequired    = errors.New("GROUP_NAME_REQUIRED")
+	ErrGroupRolesRequired   = errors.New("GROUP_ROLES_REQUIRED")
+	ErrGroupUserIDsRequired = errors.New("GROUP_USER_IDS_REQUIRED")
+	ErrGroupAlreadyExists   = errors.New("GROUP_ALREADY_EXISTS")
+	ErrGroupNotFound        = errors.New("GROUP_NOT_FOUND")
+	ErrUserOrGroupNotFound  = errors.New("USER_OR_GROUP_NOT_FOUND")
 
 	ErrCredentialNameRequired      = errors.New("CREDENTIAL_NAME_REQUIRED")
 	ErrCredentialAccessKeyRequired = errors.New("CREDENTIAL_ACCESS_KEY_REQUIRED")
@@ -55,6 +63,13 @@ var (
 		ErrCredentialAccessKeyRequired.Error(): ErrCredentialAccessKeyRequired,
 		ErrUserIDRequired.Error():              ErrUserIDRequired,
 		ErrProjectIDRequired.Error():           ErrProjectIDRequired,
+		ErrGroupIDRequired.Error():             ErrGroupIDRequired,
+		ErrGroupUserIDsRequired.Error():        ErrGroupUserIDsRequired,
+		ErrGroupNameRequired.Error():           ErrGroupNameRequired,
+		ErrGroupRolesRequired.Error():          ErrGroupRolesRequired,
+		ErrGroupAlreadyExists.Error():          ErrGroupAlreadyExists,
+		ErrGroupNotFound.Error():               ErrGroupNotFound,
+		ErrUserOrGroupNotFound.Error():         ErrUserOrGroupNotFound,
 		ErrServiceUserNameRequired.Error():     ErrServiceUserNameRequired,
 		ErrServiceUserPasswordRequired.Error(): ErrServiceUserPasswordRequired,
 		ErrServiceUserRolesRequired.Error():    ErrServiceUserRolesRequired,

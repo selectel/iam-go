@@ -26,7 +26,7 @@ func TestList(t *testing.T) {
 	tests := []struct {
 		name             string
 		prepare          func()
-		expectedResponse []User
+		expectedResponse []UserListResponse
 		expectedError    error
 	}{
 		{
@@ -34,11 +34,11 @@ func TestList(t *testing.T) {
 			prepare: func() {
 				httpmock.RegisterResponder(
 					http.MethodGet, testdata.TestURL+usersURL, func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestGetUsersResponse)
+						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestListUsersResponse)
 						return resp, nil
 					})
 			},
-			expectedResponse: []User{
+			expectedResponse: []UserListResponse{
 				{
 					AuthType:   "local",
 					KeystoneID: "123",
@@ -119,6 +119,9 @@ func TestGet(t *testing.T) {
 				ID:         "123",
 				Roles: []roles.Role{
 					{Scope: roles.Account, RoleName: roles.Member},
+				},
+				Groups: []Group{
+					{Name: "123", ID: "96a60e7b9e9e48308eed46269f9a147b", Roles: []roles.Role{}},
 				},
 			},
 			expectedError: nil,
@@ -240,7 +243,7 @@ func TestCreate(t *testing.T) {
 		name             string
 		args             args
 		prepare          func()
-		expectedResponse *User
+		expectedResponse *CreateResponse
 		expectedError    error
 	}{
 		{
@@ -263,7 +266,7 @@ func TestCreate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: &User{
+			expectedResponse: &CreateResponse{
 				AuthType: "federated",
 				Federation: &Federation{
 					ExternalID: "123",

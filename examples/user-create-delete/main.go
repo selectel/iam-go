@@ -9,16 +9,19 @@ import (
 	"github.com/selectel/iam-go/service/users"
 )
 
-func main() {
+var (
 	// KeystoneToken
-	token := "gAAAAA..."
+	token          = "gAAAAA..."
+	deleteAfterRun = false
 
 	// Prefix to be added to User-Agent.
-	prefix := "iam-go"
+	prefix = "iam-go"
 
 	// Email of the User to create.
-	email := "testmail@mail.com"
+	email = "testmail@example.com"
+)
 
+func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
@@ -51,13 +54,15 @@ func main() {
 
 	fmt.Printf("Step 1: Created User ID: %s Keystone ID: %s\n", user.ID, user.KeystoneID)
 
-	// // Delete an existing User.
-	// err = usersAPI.Delete(ctx, user.ID)
+	if deleteAfterRun {
+		// Delete an existing User.
+		err = usersAPI.Delete(ctx, user.ID)
 
-	// // Handle the error.
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
+		// Handle the error.
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	// fmt.Printf("Step 2: Deleted User ID: %s", user.ID)
+		fmt.Printf("Step 2: Deleted User ID: %s", user.ID)
+	}
 }

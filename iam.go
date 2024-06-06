@@ -7,6 +7,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/groups"
 	"github.com/selectel/iam-go/service/s3credentials"
 	"github.com/selectel/iam-go/service/serviceusers"
 	"github.com/selectel/iam-go/service/users"
@@ -50,6 +51,9 @@ type Client struct {
 
 	// ServiceUsers instance is used to make requests against Selectel IAM API and manage Service Users.
 	ServiceUsers *serviceusers.ServiceUsers
+
+	// Groups instance is used to make requests against Selectel IAM API and manage Groups of users.
+	Groups *groups.Groups
 
 	// S3Credentials instance is used to make requests against Selectel IAM API and manage S3 Credentials.
 	S3Credentials *s3credentials.S3Credentials
@@ -122,6 +126,7 @@ func New(opts ...Option) (*Client, error) {
 
 	c.Users = users.New(c.baseClient)
 	c.ServiceUsers = serviceusers.New(c.baseClient)
+	c.Groups = groups.New(c.baseClient)
 	c.S3Credentials = s3credentials.New(c.baseClient)
 
 	return c, nil

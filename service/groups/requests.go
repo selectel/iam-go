@@ -1,0 +1,273 @@
+package groups
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/url"
+
+	"github.com/selectel/iam-go/iamerrors"
+	"github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/roles"
+)
+
+const apiVersion = "iam/v1"
+
+// Groups is used to communicate with the Groups API.
+type Groups struct {
+	baseClient *client.BaseClient
+}
+
+// New Initialises Groups with the given client.
+func New(baseClient *client.BaseClient) *Groups {
+	return &Groups{
+		baseClient: baseClient,
+	}
+}
+
+// List returns a list of Groups for the account.
+func (u *Groups) List(ctx context.Context) ([]GroupListResponse, error) {
+	path, err := url.JoinPath(apiVersion, "groups")
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   nil,
+		Method: http.MethodGet,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return nil, err
+	}
+
+	var groups listResponse
+	err = client.UnmarshalJSON(response, &groups)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	return groups.Groups, nil
+}
+
+// Get returns an info of Group with groupID.
+func (u *Groups) Get(ctx context.Context, groupID string) (*Group, error) {
+	if groupID == "" {
+		return nil, iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+
+	path, err := url.JoinPath(apiVersion, "groups", groupID)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   nil,
+		Method: http.MethodGet,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return nil, err
+	}
+
+	var group Group
+	err = client.UnmarshalJSON(response, &group)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	return &group, nil
+}
+
+// Create creates a new Group.
+func (u *Groups) Create(ctx context.Context, input CreateRequest) (*Group, error) {
+	if input.Name == "" {
+		return nil, iamerrors.Error{Err: iamerrors.ErrGroupNameRequired, Desc: "No Name for Group was provided."}
+	}
+
+	path, err := url.JoinPath(apiVersion, "groups")
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	body, err := json.Marshal(input)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   bytes.NewReader(body),
+		Method: http.MethodPost,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return nil, err
+	}
+
+	var group Group
+	err = client.UnmarshalJSON(response, &group)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	return &group, nil
+}
+
+// Update updates exists Group.
+func (u *Groups) Update(ctx context.Context, groupID string, input ModifyRequest) (*Group, error) {
+	if groupID == "" {
+		return nil, iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+
+	path, err := url.JoinPath(apiVersion, "groups", groupID)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	body, err := json.Marshal(input)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	response, err := u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   bytes.NewReader(body),
+		Method: http.MethodPatch,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return nil, err
+	}
+
+	var group Group
+	err = client.UnmarshalJSON(response, &group)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	return &group, nil
+}
+
+// Delete deletes a Group from the account.
+func (u *Groups) Delete(ctx context.Context, groupID string) error {
+	if groupID == "" {
+		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+
+	path, err := url.JoinPath(apiVersion, "groups", groupID)
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   nil,
+		Method: http.MethodDelete,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return err
+	}
+
+	return nil
+}
+
+// AssignRoles adds new roles for a Group with the given groupID.
+func (u *Groups) AssignRoles(ctx context.Context, groupID string, roles []roles.Role) error {
+	if groupID == "" {
+		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+
+	if len(roles) == 0 {
+		return iamerrors.Error{Err: iamerrors.ErrGroupRolesRequired, Desc: "No roles for Group was provided."}
+	}
+
+	return u.manageRoles(ctx, http.MethodPut, groupID, roles)
+}
+
+// UnassignRoles removes roles from a Group with the given groupID.
+func (u *Groups) UnassignRoles(ctx context.Context, groupID string, roles []roles.Role) error {
+	if groupID == "" {
+		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+	if len(roles) == 0 {
+		return iamerrors.Error{Err: iamerrors.ErrGroupRolesRequired, Desc: "No roles for Group was provided."}
+	}
+
+	return u.manageRoles(ctx, http.MethodDelete, groupID, roles)
+}
+
+func (u *Groups) manageRoles(ctx context.Context, method string, groupID string, roles []roles.Role) error {
+	path, err := url.JoinPath(apiVersion, "groups", groupID, "roles")
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	body, err := json.Marshal(manageRolesRequest{
+		Roles: roles,
+	})
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   bytes.NewReader(body),
+		Method: method,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return err
+	}
+
+	return nil
+}
+
+// AddUsers adds new users to a Group with the given groupID.
+func (u *Groups) AddUsers(ctx context.Context, groupID string, usersKeystoneIDs []string) error {
+	if groupID == "" {
+		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+
+	if len(usersKeystoneIDs) == 0 {
+		return iamerrors.Error{Err: iamerrors.ErrGroupUserIDsRequired, Desc: "No users for Group was provided."}
+	}
+
+	return u.manageUsers(ctx, http.MethodPut, groupID, usersKeystoneIDs)
+}
+
+// DeleteUsers removes users from a Group with the given groupID.
+func (u *Groups) DeleteUsers(ctx context.Context, groupID string, usersKeystoneIDs []string) error {
+	if groupID == "" {
+		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+	}
+	if len(usersKeystoneIDs) == 0 {
+		return iamerrors.Error{Err: iamerrors.ErrGroupUserIDsRequired, Desc: "No users for Group was provided."}
+	}
+
+	return u.manageUsers(ctx, http.MethodDelete, groupID, usersKeystoneIDs)
+}
+
+func (u *Groups) manageUsers(ctx context.Context, method string, groupID string, usersKeystoneIDs []string) error {
+	path, err := url.JoinPath(apiVersion, "groups", groupID, "users")
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	body, err := json.Marshal(manageUsersRequest{
+		KeystoneIds: usersKeystoneIDs,
+	})
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	_, err = u.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   bytes.NewReader(body),
+		Method: method,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return err
+	}
+
+	return nil
+}

@@ -9,25 +9,25 @@ import (
 	"github.com/selectel/iam-go/service/serviceusers"
 )
 
-func main() {
+var (
 	// KeystoneToken
-	token := "gAAAAA..."
+	token          = "gAAAAA..."
+	deleteAfterRun = false
 
 	// Prefix to be added to User-Agent.
-	prefix := "iam-go"
-
+	prefix = "iam-go"
 	// Name of the Service User to create.
-	name := "service-user"
-
+	name = "service-user"
 	// Password of the Service User to create.
-	password := "Qazwsxedc123"
+	password = "Qazwsxedc123"
+)
 
+func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
 		iam.WithUserAgentPrefix(prefix),
 	)
-	// Handle the error.
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -46,7 +46,6 @@ func main() {
 		Password: password,
 		Roles:    []roles.Role{{Scope: roles.Account, RoleName: roles.Billing}},
 	})
-	// Handle the error.
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -58,7 +57,6 @@ func main() {
 	_, err = serviceUsersAPI.Update(ctx, serviceUser.ID, serviceusers.UpdateRequest{
 		Enabled: false,
 	})
-	// Handle the error.
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -66,13 +64,16 @@ func main() {
 
 	fmt.Printf("Step 2: Disabled Service User ID %s\n", serviceUser.ID)
 
-	// // Delete an existing Service User.
-	// err = serviceUsersAPI.Delete(ctx, serviceUser.ID)
+	// Disabled by default
+	if deleteAfterRun {
+		// Delete an existing Service User.
+		err = serviceUsersAPI.Delete(ctx, serviceUser.ID)
 
-	// // Handle the error.
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
+		// Handle the error.
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	// fmt.Printf("Step 3: Deleted Service User ID %s\n", serviceUser.ID)
+		fmt.Printf("Step 3: Deleted Service User ID %s\n", serviceUser.ID)
+	}
 }
