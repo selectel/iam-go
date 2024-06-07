@@ -5,24 +5,36 @@ import (
 	"github.com/selectel/iam-go/service/users"
 )
 
-type listResponse struct {
-	Groups []GroupListResponse `json:"groups"`
+// ListResponse represents all Groups in account.
+type ListResponse struct {
+	Groups []Group `json:"groups"`
 }
 
-// GroupListResponse represents a Group in list response.
-type GroupListResponse struct {
+// Group represents basic information about a Group.
+type Group struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
 	Roles       []roles.Role `json:"roles"`
 }
 
-// Group represents a Group of users.
-type Group struct {
-	ID           string        `json:"id"`
-	Name         string        `json:"name"`
-	Description  string        `json:"description"`
-	Roles        []roles.Role  `json:"roles"`
+// GetResponse represents a Group of users.
+type GetResponse struct {
+	Group
+	ServiceUsers []ServiceUser `json:"service_users"`
+	Users        []User        `json:"users"`
+}
+
+// CreateResponse represents a Group of users.
+type CreateResponse struct {
+	Group
+	ServiceUsers []ServiceUser `json:"service_users"`
+	Users        []User        `json:"users"`
+}
+
+// UpdateResponse represents a Group of users.
+type UpdateResponse struct {
+	Group
 	ServiceUsers []ServiceUser `json:"service_users"`
 	Users        []User        `json:"users"`
 }
@@ -48,8 +60,8 @@ type CreateRequest struct {
 	Description string `json:"description,omitempty"`
 }
 
-// ModifyRequest is used as options for Update method.
-type ModifyRequest struct {
+// UpdateRequest is used as options for Update method.
+type UpdateRequest struct {
 	Name        string  `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
 }

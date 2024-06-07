@@ -43,8 +43,8 @@ func main() {
 		return
 	}
 
-	var chosenUser *users.UserListResponse
-	for _, user := range allUsers {
+	var chosenUser *users.User
+	for _, user := range allUsers.Users {
 		for _, role := range user.Roles {
 			if role.RoleName == roles.Billing && user.ID != "account_root" {
 				chosenUser = &user

@@ -1,8 +1,8 @@
 package testdata
 
 const (
-	TestToken = "test-token"
-	TestURL   = "http://example.org/"
+	TestToken     = "test-token"
+	TestURL       = "http://example.org/"
 	TestUserAgent = "iam-go/v0.0.1"
 )
 

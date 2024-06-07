@@ -15,29 +15,27 @@ const (
 	Federated AuthType = "federated"
 )
 
-type listResponse struct {
-	Users []UserListResponse `json:"users"`
+// ListResponse represents all Selectel Users in account.
+type ListResponse struct {
+	Users []User `json:"users"`
 }
 
-// UserListResponse represents a Selectel User in list response.
-type UserListResponse struct {
-	AuthType   AuthType     `json:"auth_type"`
-	Federation *Federation  `json:"federation,omitempty"`
-	Roles      []roles.Role `json:"roles"`
-	ID         string       `json:"id"`
-	KeystoneID string       `json:"keystone_id"`
-}
-
-// User represents a Selectel Panel User.
+// User represents basic information about a Selectel User.
 type User struct {
 	AuthType   AuthType     `json:"auth_type"`
 	Federation *Federation  `json:"federation,omitempty"`
 	Roles      []roles.Role `json:"roles"`
 	ID         string       `json:"id"`
 	KeystoneID string       `json:"keystone_id"`
-	Groups     []Group      `json:"groups"`
 }
 
+// GetResponse represents a Selectel Panel User.
+type GetResponse struct {
+	User
+	Groups []Group `json:"groups"`
+}
+
+// Federation contains info about federation for users with Federated AuthType.
 type Federation struct {
 	// ExternalID is user id that will be sent by the identity provider.
 	ExternalID string `json:"external_id"`
@@ -45,7 +43,7 @@ type Federation struct {
 	ID string `json:"id"`
 }
 
-// Group represents a Group for users.
+// Group represents information about the Group the user is a member of.
 type Group struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
@@ -72,12 +70,9 @@ type createRequest struct {
 	Subscriptions     []string     `json:"subscriptions"`      // Issue, should be hardcoded to `[]`
 }
 
+// CreateResponse represents a Selectel Panel User.
 type CreateResponse struct {
-	AuthType   AuthType     `json:"auth_type"`
-	Federation *Federation  `json:"federation,omitempty"`
-	Roles      []roles.Role `json:"roles"`
-	ID         string       `json:"id"`
-	KeystoneID string       `json:"keystone_id"`
+	User
 }
 
 type manageRolesRequest struct {

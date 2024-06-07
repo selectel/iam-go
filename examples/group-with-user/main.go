@@ -67,12 +67,13 @@ func main() {
 	}
 	fmt.Printf("Step 3: Assigned Role %s with scope %s to Group ID: %s\n", roles.Member, roles.Account, group.ID)
 
-	group, err = groupsAPI.Update(ctx, group.ID, groups.ModifyRequest{Name: updatedGroupName,
+	updatedGroup, err := groupsAPI.Update(ctx, group.ID, groups.UpdateRequest{Name: updatedGroupName,
 		Description: &updatedDescription})
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	group.Group = updatedGroup.Group
 	fmt.Printf("Step 4: Group Name and Description updated to: %s and %s\n", group.Name, group.Description)
 
 	if deleteAfterRun {
