@@ -7,6 +7,8 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/federations"
+	"github.com/selectel/iam-go/service/federations/certificates"
 	"github.com/selectel/iam-go/service/groups"
 	"github.com/selectel/iam-go/service/s3credentials"
 	"github.com/selectel/iam-go/service/serviceusers"
@@ -57,6 +59,13 @@ type Client struct {
 
 	// S3Credentials instance is used to make requests against Selectel IAM API and manage S3 Credentials.
 	S3Credentials *s3credentials.Service
+
+	// Federations instance is used to make requests against Selectel IAM API and manage Federations.
+	Federations *federations.Service
+
+	// FederationsCertificates instance is used to make requests against Selectel IAM API
+	// and manage Federations Certificates.
+	FederationsCertificates *certificates.Service
 }
 
 type AuthOpts struct {
@@ -128,6 +137,8 @@ func New(opts ...Option) (*Client, error) {
 	c.ServiceUsers = serviceusers.New(c.baseClient)
 	c.Groups = groups.New(c.baseClient)
 	c.S3Credentials = s3credentials.New(c.baseClient)
+	c.Federations = federations.New(c.baseClient)
+	c.FederationsCertificates = certificates.New(c.baseClient)
 
 	return c, nil
 }
