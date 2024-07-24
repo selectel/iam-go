@@ -1,8 +1,6 @@
 package iam
 
 import (
-	"github.com/selectel/iam-go/service/federations"
-	"github.com/selectel/iam-go/service/federations/certificates"
 	"net/http"
 	"testing"
 	"time"
@@ -12,6 +10,8 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/federations"
+	"github.com/selectel/iam-go/service/federations/certificates"
 	"github.com/selectel/iam-go/service/groups"
 	"github.com/selectel/iam-go/service/s3credentials"
 	"github.com/selectel/iam-go/service/serviceusers"
