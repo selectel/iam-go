@@ -13,7 +13,7 @@ import (
 
 const apiVersion = "v1"
 
-// Service is used to communicate with the Federations API.
+// Service is used to communicate with the Federations Certificates API.
 type Service struct {
 	baseClient *client.BaseClient
 }
