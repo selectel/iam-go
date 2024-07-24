@@ -1,6 +1,8 @@
 package iam
 
 import (
+	"github.com/selectel/iam-go/service/federations"
+	"github.com/selectel/iam-go/service/federations/certificates"
 	"net/http"
 	"testing"
 	"time"
@@ -57,11 +59,13 @@ func TestNew(t *testing.T) {
 					authOpts: &AuthOpts{
 						KeystoneToken: testToken,
 					},
-					baseClient:    baseClient,
-					Users:         users.New(baseClient),
-					ServiceUsers:  serviceusers.New(baseClient),
-					Groups:        groups.New(baseClient),
-					S3Credentials: s3credentials.New(baseClient),
+					baseClient:              baseClient,
+					Users:                   users.New(baseClient),
+					ServiceUsers:            serviceusers.New(baseClient),
+					Groups:                  groups.New(baseClient),
+					S3Credentials:           s3credentials.New(baseClient),
+					Federations:             federations.New(baseClient),
+					FederationsCertificates: certificates.New(baseClient),
 				}
 			},
 			expectedError: nil,
@@ -99,11 +103,13 @@ func TestNew(t *testing.T) {
 					authOpts: &AuthOpts{
 						KeystoneToken: testToken,
 					},
-					baseClient:    baseClient,
-					Users:         users.New(baseClient),
-					ServiceUsers:  serviceusers.New(baseClient),
-					Groups:        groups.New(baseClient),
-					S3Credentials: s3credentials.New(baseClient),
+					baseClient:              baseClient,
+					Users:                   users.New(baseClient),
+					ServiceUsers:            serviceusers.New(baseClient),
+					Groups:                  groups.New(baseClient),
+					S3Credentials:           s3credentials.New(baseClient),
+					Federations:             federations.New(baseClient),
+					FederationsCertificates: certificates.New(baseClient),
 				}
 			},
 			expectedError: nil,
@@ -134,11 +140,13 @@ func TestNew(t *testing.T) {
 					authOpts: &AuthOpts{
 						KeystoneToken: testToken,
 					},
-					baseClient:    baseClient,
-					Users:         users.New(baseClient),
-					ServiceUsers:  serviceusers.New(baseClient),
-					Groups:        groups.New(baseClient),
-					S3Credentials: s3credentials.New(baseClient),
+					baseClient:              baseClient,
+					Users:                   users.New(baseClient),
+					ServiceUsers:            serviceusers.New(baseClient),
+					Groups:                  groups.New(baseClient),
+					S3Credentials:           s3credentials.New(baseClient),
+					Federations:             federations.New(baseClient),
+					FederationsCertificates: certificates.New(baseClient),
 				}
 			},
 			expectedError: nil,
