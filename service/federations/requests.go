@@ -181,7 +181,7 @@ func (s *Service) Update(ctx context.Context, federationID string, input UpdateR
 	return nil
 }
 
-// Delete deletes a Group from the account.
+// Delete deletes a Federation from the account.
 func (s *Service) Delete(ctx context.Context, federationID string) error {
 	if federationID == "" {
 		return iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
