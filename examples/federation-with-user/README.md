@@ -13,8 +13,6 @@ Running this file will execute the following operations:
 3. **Create federated User:** Create is used to create a new federated User.
 4. **Update Federation:** Updates the Federation Name and Description.
 5. **(Delete Federation):** _(disabled by default)_ Delete a just-created Federation on a previous step.
-6. **(Delete Federation Certificate):** _(disabled by default)_ Delete a just-created Federation Certificate on a previous step.
-7. **(Delete User):** _(disabled by default)_ Delete a just-created federated User on a previous step.
 
 You should see an output like the following:
 ```
@@ -23,6 +21,4 @@ Step 2: Created Certificate for Federation ID: 12345_3... Federation ID: 1a2b3c.
 Step 3: Created federated User ID: 54321_2... Keystone ID: 1c2b3a...
 Step 4: Updated Federation Name and Description
 Step 5: Deleting Federation with ID: 1a2b3c...
-Step 6: Deleting Federation Certificate with ID: 12345_3...
-Step 6: Deleting User with ID: 54321_2...
 ```

@@ -1,4 +1,4 @@
-package federations
+package saml
 
 import (
 	"bytes"
@@ -99,6 +99,12 @@ func (s *Service) Create(ctx context.Context, input CreateRequest) (*CreateRespo
 			Desc: "No SSO URL for Federation was provided.",
 		}
 	}
+	if input.SessionMaxAgeHours == 0 {
+		return nil, iamerrors.Error{
+			Err:  iamerrors.ErrFederationMaxAgeHoursRequired,
+			Desc: "No Max Age Hours for Federation was provided.",
+		}
+	}
 
 	path, err := url.JoinPath(apiVersion, "federations", "saml")
 	if err != nil {
@@ -126,30 +132,6 @@ func (s *Service) Create(ctx context.Context, input CreateRequest) (*CreateRespo
 		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 	return &federation, nil
-}
-
-// Check checks if Federation with federationID exists.
-func (s *Service) Check(ctx context.Context, federationID string) error {
-	if federationID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-
-	path, err := url.JoinPath(apiVersion, "federations", "saml", federationID)
-	if err != nil {
-		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   nil,
-		Method: http.MethodHead,
-		Path:   path,
-	})
-	if err != nil {
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return err
-	}
-
-	return nil
 }
 
 // Update updates existing Federation.

@@ -36,12 +36,12 @@ type UpdateResponse struct {
 // CreateRequest is used to set options for Create method.
 type CreateRequest struct {
 	Name        string `json:"name"`
-	Description string `json:"description"`
+	Description string `json:"description,omitempty"`
 	Data        string `json:"data"`
 }
 
 // UpdateRequest is used to set options for Update method.
 type UpdateRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name        string `json:"name,omitempty"`
+	Description string `json:"description,omitempty"`
 }

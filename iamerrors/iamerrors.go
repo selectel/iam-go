@@ -35,6 +35,7 @@ var (
 	ErrFederationIssuerRequired        = errors.New("FEDERATION_ISSUER_REQUIRED")
 	ErrFederationSSOURLRequired        = errors.New("FEDERATION_SSO_URL_REQUIRED")
 	ErrFederationCertificateIDRequired = errors.New("FEDERATION_CERTIFICATE_ID_REQUIRED")
+	ErrFederationMaxAgeHoursRequired   = errors.New("FEDERATION_MAX_AGE_HOURS_REQUIRED")
 	ErrFederationNotFound              = errors.New("FEDERATION_NOT_FOUND")
 
 	ErrCredentialNameRequired      = errors.New("CREDENTIAL_NAME_REQUIRED")
@@ -82,6 +83,7 @@ var (
 		ErrFederationSSOURLRequired.Error():        ErrFederationSSOURLRequired,
 		ErrFederationCertificateIDRequired.Error(): ErrFederationCertificateIDRequired,
 		ErrFederationNotFound.Error():              ErrFederationNotFound,
+		ErrFederationMaxAgeHoursRequired.Error():   ErrFederationMaxAgeHoursRequired,
 		ErrUserOrGroupNotFound.Error():             ErrUserOrGroupNotFound,
 		ErrServiceUserNameRequired.Error():         ErrServiceUserNameRequired,
 		ErrServiceUserPasswordRequired.Error():     ErrServiceUserPasswordRequired,

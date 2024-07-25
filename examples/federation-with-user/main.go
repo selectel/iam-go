@@ -3,17 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/selectel/iam-go"
-	"github.com/selectel/iam-go/service/federations"
 	"github.com/selectel/iam-go/service/federations/certificates"
+	"github.com/selectel/iam-go/service/federations/saml"
 	"github.com/selectel/iam-go/service/roles"
 	"github.com/selectel/iam-go/service/users"
 )
 
 var (
 	// KeystoneToken
-	token          = "gAAAAA..."
+	token          = "gAAAAABmoPpv1X9N2ufmTIUeq6Z8xzhh7QvuZp3y9PqA-ISZWownO0bOZQqJGSv6LURN6LagfEVQCWKDyXREfVLOXpX05g45PNBiSZYHSf-sV0VoIFriD-ITwZCWfynm0wgDzh9u4Opwlj_hA06EPJJtrOfEP9uIOMcYAC-5i-VPwV5wTo2cVnI"
 	deleteAfterRun = false
 
 	// Prefix to be added to User-Agent.
@@ -26,7 +27,7 @@ var (
 
 	certificateName        = "certificate name"
 	certificateDescription = "certificate description"
-	certificateData        = "cert"
+	certificateFileName    = "cert.crt"
 
 	userEmail      = "testmail@example.com"
 	userExternalID = "some_id"
@@ -49,16 +50,13 @@ func main() {
 
 	ctx := context.Background()
 
-	federation, err := federationsAPI.Create(ctx, federations.CreateRequest{
-		Federation: federations.Federation{
-			Name:               federationName,
-			Description:        federationDescription,
-			Issuer:             "http://localhost:8080/realms/master",
-			SSOUrl:             "http://localhost:8080/realms/master/protocol/saml",
-			SignAuthnRequests:  true,
-			ForceAuthn:         true,
-			SessionMaxAgeHours: 100,
-		},
+	federation, err := federationsAPI.Create(ctx, saml.CreateRequest{
+		Name:               federationName,
+		Description:        federationDescription,
+		Issuer:             "http://localhost:8080/realms/master",
+		SSOUrl:             "http://localhost:8080/realms/master/protocol/saml",
+		SessionMaxAgeHours: 24,
+		SignAuthnRequests:  true,
 	})
 	if err != nil {
 		fmt.Println(err)
@@ -66,10 +64,16 @@ func main() {
 	}
 	fmt.Printf("Step 1: Created Federation Name: %s ID: %s\n", federation.Name, federation.ID)
 
+	cert, err := os.ReadFile(certificateFileName)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	certificate, err := federationsCertificatesAPI.Create(ctx, federation.ID, certificates.CreateRequest{
 		Name:        certificateName,
 		Description: certificateDescription,
-		Data:        certificateData,
+		Data:        string(cert),
 	})
 	if err != nil {
 		fmt.Println(err)
@@ -92,31 +96,21 @@ func main() {
 	}
 	fmt.Printf("Step 3: Created federated User ID: %s Keystone ID: %s\n", user.ID, user.KeystoneID)
 
-	err = federationsAPI.Update(ctx, federation.ID, federations.UpdateRequest{
-		Federation: federations.Federation{
-			Name:        updatedFederationName,
-			Description: updatedFederationDescription,
-		},
+	err = federationsAPI.Update(ctx, federation.ID, saml.UpdateRequest{
+		Name:        updatedFederationName,
+		Description: updatedFederationDescription,
 	})
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Step 4: Updated Federation Name and Description")
+	fmt.Println("Step 4: Updated Federation Name and Description")
 
 	if deleteAfterRun {
+		// Removing User and Federation Certificate is unnecessary because removal of Federation
+		// also deletes its Certificate and all attached Users
 		fmt.Printf("Step 5: Deleting Federation with ID: %s\n", federation.ID)
 		if err = federationsAPI.Delete(ctx, federation.ID); err != nil {
-			fmt.Println(err)
-		}
-
-		fmt.Printf("Step 6: Deleting Federation Certificate with ID: %s\n", certificate.ID)
-		if err = federationsAPI.Delete(ctx, federation.ID); err != nil {
-			fmt.Println(err)
-		}
-
-		fmt.Printf("Step 7: Deleting User with ID: %s\n", user.ID)
-		if err = usersAPI.Delete(ctx, user.ID); err != nil {
 			fmt.Println(err)
 		}
 	}

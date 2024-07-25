@@ -10,8 +10,8 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/federations"
 	"github.com/selectel/iam-go/service/federations/certificates"
+	"github.com/selectel/iam-go/service/federations/saml"
 	"github.com/selectel/iam-go/service/groups"
 	"github.com/selectel/iam-go/service/s3credentials"
 	"github.com/selectel/iam-go/service/serviceusers"
@@ -64,7 +64,7 @@ func TestNew(t *testing.T) {
 					ServiceUsers:            serviceusers.New(baseClient),
 					Groups:                  groups.New(baseClient),
 					S3Credentials:           s3credentials.New(baseClient),
-					Federations:             federations.New(baseClient),
+					Federations:             saml.New(baseClient),
 					FederationsCertificates: certificates.New(baseClient),
 				}
 			},
@@ -108,7 +108,7 @@ func TestNew(t *testing.T) {
 					ServiceUsers:            serviceusers.New(baseClient),
 					Groups:                  groups.New(baseClient),
 					S3Credentials:           s3credentials.New(baseClient),
-					Federations:             federations.New(baseClient),
+					Federations:             saml.New(baseClient),
 					FederationsCertificates: certificates.New(baseClient),
 				}
 			},
@@ -145,7 +145,7 @@ func TestNew(t *testing.T) {
 					ServiceUsers:            serviceusers.New(baseClient),
 					Groups:                  groups.New(baseClient),
 					S3Credentials:           s3credentials.New(baseClient),
-					Federations:             federations.New(baseClient),
+					Federations:             saml.New(baseClient),
 					FederationsCertificates: certificates.New(baseClient),
 				}
 			},

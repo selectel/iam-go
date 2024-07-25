@@ -1,4 +1,4 @@
-package federations
+package saml
 
 import (
 	"context"
@@ -11,12 +11,17 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/federations/testdata"
+	"github.com/selectel/iam-go/service/federations/saml/testdata"
 )
 
 const (
 	federationsURL   = "v1/federations/saml"
 	federationsIDURL = "v1/federations/saml/123"
+)
+
+// Convenience vars for bool values.
+var (
+	iTrue = true
 )
 
 func TestList(t *testing.T) {
@@ -36,19 +41,17 @@ func TestList(t *testing.T) {
 					})
 			},
 			expectedResponse: &ListResponse{
-				[]FederationWithIDs{
+				[]Federation{
 					{
-						ID:        "123",
-						AccountID: "123",
-						Federation: Federation{
-							Name:               "test_name",
-							Description:        "test_description",
-							Issuer:             "test_issuer",
-							SSOUrl:             "test_sso_url",
-							SignAuthnRequests:  true,
-							ForceAuthn:         true,
-							SessionMaxAgeHours: 1,
-						},
+						ID:                 "123",
+						AccountID:          "123",
+						Name:               "test_name",
+						Description:        "test_description",
+						Issuer:             "test_issuer",
+						SSOUrl:             "test_sso_url",
+						SignAuthnRequests:  true,
+						ForceAuthn:         true,
+						SessionMaxAgeHours: 1,
 					},
 				},
 			},
@@ -111,18 +114,16 @@ func TestGet(t *testing.T) {
 					})
 			},
 			expectedResponse: &GetResponse{
-				FederationWithIDs: FederationWithIDs{
-					ID:        "123",
-					AccountID: "123",
-					Federation: Federation{
-						Name:               "test_name",
-						Description:        "test_description",
-						Issuer:             "test_issuer",
-						SSOUrl:             "test_sso_url",
-						SignAuthnRequests:  true,
-						ForceAuthn:         true,
-						SessionMaxAgeHours: 1,
-					},
+				Federation: Federation{
+					ID:                 "123",
+					AccountID:          "123",
+					Name:               "test_name",
+					Description:        "test_description",
+					Issuer:             "test_issuer",
+					SSOUrl:             "test_sso_url",
+					SignAuthnRequests:  true,
+					ForceAuthn:         true,
+					SessionMaxAgeHours: 1,
 				},
 			},
 			expectedError: nil,
@@ -185,7 +186,18 @@ func TestCreate(t *testing.T) {
 					})
 			},
 			input: CreateRequest{
+				Name:               "test_name",
+				Description:        "test_description",
+				Issuer:             "test_issuer",
+				SSOUrl:             "test_sso_url",
+				SignAuthnRequests:  true,
+				ForceAuthn:         true,
+				SessionMaxAgeHours: 1,
+			},
+			expectedResponse: &CreateResponse{
 				Federation: Federation{
+					ID:                 "123",
+					AccountID:          "123",
 					Name:               "test_name",
 					Description:        "test_description",
 					Issuer:             "test_issuer",
@@ -193,21 +205,6 @@ func TestCreate(t *testing.T) {
 					SignAuthnRequests:  true,
 					ForceAuthn:         true,
 					SessionMaxAgeHours: 1,
-				},
-			},
-			expectedResponse: &CreateResponse{
-				FederationWithIDs: FederationWithIDs{
-					ID:        "123",
-					AccountID: "123",
-					Federation: Federation{
-						Name:               "test_name",
-						Description:        "test_description",
-						Issuer:             "test_issuer",
-						SSOUrl:             "test_sso_url",
-						SignAuthnRequests:  true,
-						ForceAuthn:         true,
-						SessionMaxAgeHours: 1,
-					},
 				},
 			},
 			expectedError: nil,
@@ -222,15 +219,13 @@ func TestCreate(t *testing.T) {
 					})
 			},
 			input: CreateRequest{
-				Federation: Federation{
-					Name:               "test_name",
-					Description:        "test_description",
-					Issuer:             "test_issuer",
-					SSOUrl:             "test_sso_url",
-					SignAuthnRequests:  true,
-					ForceAuthn:         true,
-					SessionMaxAgeHours: 1,
-				},
+				Name:               "test_name",
+				Description:        "test_description",
+				Issuer:             "test_issuer",
+				SSOUrl:             "test_sso_url",
+				SignAuthnRequests:  true,
+				ForceAuthn:         true,
+				SessionMaxAgeHours: 1,
 			},
 			expectedResponse: nil,
 			expectedError:    iamerrors.ErrForbidden,
@@ -281,7 +276,18 @@ func TestUpdate(t *testing.T) {
 					})
 			},
 			input: UpdateRequest{
+				Name:               "test_name",
+				Description:        "test_description",
+				Issuer:             "test_issuer",
+				SSOUrl:             "test_sso_url",
+				SignAuthnRequests:  &iTrue,
+				ForceAuthn:         &iTrue,
+				SessionMaxAgeHours: 1,
+			},
+			expectedResponse: &GetResponse{
 				Federation: Federation{
+					ID:                 "123",
+					AccountID:          "123",
 					Name:               "test_name",
 					Description:        "test_description",
 					Issuer:             "test_issuer",
@@ -289,21 +295,6 @@ func TestUpdate(t *testing.T) {
 					SignAuthnRequests:  true,
 					ForceAuthn:         true,
 					SessionMaxAgeHours: 1,
-				},
-			},
-			expectedResponse: &GetResponse{
-				FederationWithIDs: FederationWithIDs{
-					ID:        "123",
-					AccountID: "123",
-					Federation: Federation{
-						Name:               "test_name",
-						Description:        "test_description",
-						Issuer:             "test_issuer",
-						SSOUrl:             "test_sso_url",
-						SignAuthnRequests:  true,
-						ForceAuthn:         true,
-						SessionMaxAgeHours: 1,
-					},
 				},
 			},
 			expectedError: nil,
@@ -318,15 +309,13 @@ func TestUpdate(t *testing.T) {
 					})
 			},
 			input: UpdateRequest{
-				Federation: Federation{
-					Name:               "test_name",
-					Description:        "test_description",
-					Issuer:             "test_issuer",
-					SSOUrl:             "test_sso_url",
-					SignAuthnRequests:  true,
-					ForceAuthn:         true,
-					SessionMaxAgeHours: 1,
-				},
+				Name:               "test_name",
+				Description:        "test_description",
+				Issuer:             "test_issuer",
+				SSOUrl:             "test_sso_url",
+				SignAuthnRequests:  &iTrue,
+				ForceAuthn:         &iTrue,
+				SessionMaxAgeHours: 1,
 			},
 			expectedResponse: nil,
 			expectedError:    iamerrors.ErrForbidden,
@@ -350,59 +339,6 @@ func TestUpdate(t *testing.T) {
 
 			ctx := context.Background()
 			err := federationsAPI.Update(ctx, "123", tt.input)
-
-			require.ErrorIs(err, tt.expectedError)
-		})
-	}
-}
-
-func TestCheck(t *testing.T) {
-	tests := []struct {
-		name          string
-		prepare       func()
-		expectedError error
-	}{
-		{
-			name: "ok",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodHead, testdata.TestURL+federationsIDURL, func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusOK, "")
-						return resp, nil
-					})
-			},
-			expectedError: nil,
-		},
-		{
-			name: "error",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodHead, testdata.TestURL+federationsIDURL, func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusForbidden, testdata.TestDoRequestErr)
-						return resp, nil
-					})
-			},
-			expectedError: iamerrors.ErrForbidden,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			require := require.New(t)
-
-			federationsAPI := New(&client.BaseClient{
-				HTTPClient: &http.Client{},
-				APIUrl:     testdata.TestURL,
-				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
-			})
-
-			httpmock.ActivateNonDefault(federationsAPI.baseClient.HTTPClient)
-			defer httpmock.DeactivateAndReset()
-
-			tt.prepare()
-
-			ctx := context.Background()
-			err := federationsAPI.Check(ctx, "123")
 
 			require.ErrorIs(err, tt.expectedError)
 		})
