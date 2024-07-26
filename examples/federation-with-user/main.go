@@ -14,7 +14,7 @@ import (
 
 var (
 	// KeystoneToken
-	token          = "gAAAAABmoPpv1X9N2ufmTIUeq6Z8xzhh7QvuZp3y9PqA-ISZWownO0bOZQqJGSv6LURN6LagfEVQCWKDyXREfVLOXpX05g45PNBiSZYHSf-sV0VoIFriD-ITwZCWfynm0wgDzh9u4Opwlj_hA06EPJJtrOfEP9uIOMcYAC-5i-VPwV5wTo2cVnI"
+	token          = "gAAAAA..."
 	deleteAfterRun = false
 
 	// Prefix to be added to User-Agent.
@@ -98,7 +98,7 @@ func main() {
 
 	err = federationsAPI.Update(ctx, federation.ID, saml.UpdateRequest{
 		Name:        updatedFederationName,
-		Description: updatedFederationDescription,
+		Description: &updatedFederationDescription,
 	})
 	if err != nil {
 		fmt.Println(err)

@@ -299,9 +299,10 @@ func TestUpdate(t *testing.T) {
 			tt.prepare()
 
 			ctx := context.Background()
+			desc := "test_description"
 			actual, err := certificatesAPI.Update(ctx, "123", "123", UpdateRequest{
 				Name:        "test_name",
-				Description: "test_description",
+				Description: &desc,
 			})
 
 			require.ErrorIs(err, tt.expectedError)

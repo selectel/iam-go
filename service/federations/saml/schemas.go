@@ -31,7 +31,7 @@ type GetResponse struct {
 // CreateRequest is used to set options for Create method.
 type CreateRequest struct {
 	Name               string `json:"name"`
-	Description        string `json:"description,omitempty"`
+	Description        string `json:"description"`
 	Issuer             string `json:"issuer"`
 	SSOUrl             string `json:"sso_url"`
 	SignAuthnRequests  bool   `json:"sign_authn_requests,omitempty"`
@@ -41,11 +41,11 @@ type CreateRequest struct {
 
 // UpdateRequest is used to set options for Update method.
 type UpdateRequest struct {
-	Name               string `json:"name,omitempty"`
-	Description        string `json:"description,omitempty"`
-	Issuer             string `json:"issuer,omitempty"`
-	SSOUrl             string `json:"sso_url,omitempty"`
-	SignAuthnRequests  *bool  `json:"sign_authn_requests,omitempty"`
-	ForceAuthn         *bool  `json:"force_authn,omitempty"`
-	SessionMaxAgeHours int    `json:"session_max_age_hours,omitempty"`
+	Name               string  `json:"name,omitempty"`
+	Description        *string `json:"description,omitempty"`
+	Issuer             string  `json:"issuer,omitempty"`
+	SSOUrl             string  `json:"sso_url,omitempty"`
+	SignAuthnRequests  *bool   `json:"sign_authn_requests,omitempty"`
+	ForceAuthn         *bool   `json:"force_authn,omitempty"`
+	SessionMaxAgeHours int     `json:"session_max_age_hours,omitempty"`
 }

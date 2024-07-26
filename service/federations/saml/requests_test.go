@@ -262,7 +262,6 @@ func TestUpdate(t *testing.T) {
 	tests := []struct {
 		name             string
 		prepare          func()
-		input            UpdateRequest
 		expectedResponse *GetResponse
 		expectedError    error
 	}{
@@ -274,15 +273,6 @@ func TestUpdate(t *testing.T) {
 						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestGetFederationResponse)
 						return resp, nil
 					})
-			},
-			input: UpdateRequest{
-				Name:               "test_name",
-				Description:        "test_description",
-				Issuer:             "test_issuer",
-				SSOUrl:             "test_sso_url",
-				SignAuthnRequests:  &iTrue,
-				ForceAuthn:         &iTrue,
-				SessionMaxAgeHours: 1,
 			},
 			expectedResponse: &GetResponse{
 				Federation: Federation{
@@ -308,15 +298,6 @@ func TestUpdate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			input: UpdateRequest{
-				Name:               "test_name",
-				Description:        "test_description",
-				Issuer:             "test_issuer",
-				SSOUrl:             "test_sso_url",
-				SignAuthnRequests:  &iTrue,
-				ForceAuthn:         &iTrue,
-				SessionMaxAgeHours: 1,
-			},
 			expectedResponse: nil,
 			expectedError:    iamerrors.ErrForbidden,
 		},
@@ -337,8 +318,17 @@ func TestUpdate(t *testing.T) {
 
 			tt.prepare()
 
+			desc := "test_description"
 			ctx := context.Background()
-			err := federationsAPI.Update(ctx, "123", tt.input)
+			err := federationsAPI.Update(ctx, "123", UpdateRequest{
+				Name:               "test_name",
+				Description:        &desc,
+				Issuer:             "test_issuer",
+				SSOUrl:             "test_sso_url",
+				SignAuthnRequests:  &iTrue,
+				ForceAuthn:         &iTrue,
+				SessionMaxAgeHours: 1,
+			})
 
 			require.ErrorIs(err, tt.expectedError)
 		})
