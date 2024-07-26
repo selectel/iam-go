@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/selectel/iam-go"
-	"github.com/selectel/iam-go/service/federations/certificates"
 	"github.com/selectel/iam-go/service/federations/saml"
+	"github.com/selectel/iam-go/service/federations/saml/certificates"
 	"github.com/selectel/iam-go/service/roles"
 	"github.com/selectel/iam-go/service/users"
 )
@@ -44,8 +44,8 @@ func main() {
 		return
 	}
 
-	federationsAPI := iamClient.Federations
-	federationsCertificatesAPI := iamClient.FederationsCertificates
+	federationsAPI := iamClient.SAMLFederations
+	federationsCertificatesAPI := federationsAPI.Certificates
 	usersAPI := iamClient.Users
 
 	ctx := context.Background()

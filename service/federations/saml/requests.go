@@ -9,19 +9,22 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/federations/saml/certificates"
 )
 
 const apiVersion = "v1"
 
 // Service is used to communicate with the Federations API.
 type Service struct {
-	baseClient *client.BaseClient
+	Certificates *certificates.Service
+	baseClient   *client.BaseClient
 }
 
 // New Initialises Service with the given client.
 func New(baseClient *client.BaseClient) *Service {
 	return &Service{
-		baseClient: baseClient,
+		Certificates: certificates.New(baseClient),
+		baseClient:   baseClient,
 	}
 }
 

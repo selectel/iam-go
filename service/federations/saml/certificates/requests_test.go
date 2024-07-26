@@ -11,7 +11,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/federations/certificates/testdata"
+	"github.com/selectel/iam-go/service/federations/saml/certificates/testdata"
 )
 
 const (
