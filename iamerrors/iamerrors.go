@@ -30,6 +30,14 @@ var (
 	ErrGroupNotFound        = errors.New("GROUP_NOT_FOUND")
 	ErrUserOrGroupNotFound  = errors.New("USER_OR_GROUP_NOT_FOUND")
 
+	ErrFederationNameRequired          = errors.New("FEDERATION_NAME_REQUIRED")
+	ErrFederationIDRequired            = errors.New("FEDERATION_ID_REQUIRED")
+	ErrFederationIssuerRequired        = errors.New("FEDERATION_ISSUER_REQUIRED")
+	ErrFederationSSOURLRequired        = errors.New("FEDERATION_SSO_URL_REQUIRED")
+	ErrFederationCertificateIDRequired = errors.New("FEDERATION_CERTIFICATE_ID_REQUIRED")
+	ErrFederationMaxAgeHoursRequired   = errors.New("FEDERATION_MAX_AGE_HOURS_REQUIRED")
+	ErrFederationNotFound              = errors.New("FEDERATION_NOT_FOUND")
+
 	ErrCredentialNameRequired      = errors.New("CREDENTIAL_NAME_REQUIRED")
 	ErrCredentialAccessKeyRequired = errors.New("CREDENTIAL_ACCESS_KEY_REQUIRED")
 
@@ -48,36 +56,43 @@ var (
 
 	//nolint:gochecknoglobals // stringToError is not global.
 	stringToError = map[string]error{
-		ErrUserNotFound.Error():                ErrUserNotFound,
-		ErrClientNoAuthOpts.Error():            ErrClientNoAuthOpts,
-		ErrAuthTokenUnathorized.Error():        ErrAuthTokenUnathorized,
-		ErrDomainNotFound.Error():              ErrDomainNotFound,
-		ErrCredentialNotFound.Error():          ErrCredentialNotFound,
-		ErrProjectNotFound.Error():             ErrProjectNotFound,
-		ErrUserAlreadyExists.Error():           ErrUserAlreadyExists,
-		ErrRequestValidationError.Error():      ErrRequestValidationError,
-		ErrForbidden.Error():                   ErrForbidden,
-		ErrUnauthorized.Error():                ErrUnauthorized,
-		ErrInternalServerError.Error():         ErrInternalServerError,
-		ErrCredentialNameRequired.Error():      ErrCredentialNameRequired,
-		ErrCredentialAccessKeyRequired.Error(): ErrCredentialAccessKeyRequired,
-		ErrUserIDRequired.Error():              ErrUserIDRequired,
-		ErrProjectIDRequired.Error():           ErrProjectIDRequired,
-		ErrGroupIDRequired.Error():             ErrGroupIDRequired,
-		ErrGroupUserIDsRequired.Error():        ErrGroupUserIDsRequired,
-		ErrGroupNameRequired.Error():           ErrGroupNameRequired,
-		ErrGroupRolesRequired.Error():          ErrGroupRolesRequired,
-		ErrGroupAlreadyExists.Error():          ErrGroupAlreadyExists,
-		ErrGroupNotFound.Error():               ErrGroupNotFound,
-		ErrUserOrGroupNotFound.Error():         ErrUserOrGroupNotFound,
-		ErrServiceUserNameRequired.Error():     ErrServiceUserNameRequired,
-		ErrServiceUserPasswordRequired.Error(): ErrServiceUserPasswordRequired,
-		ErrServiceUserRolesRequired.Error():    ErrServiceUserRolesRequired,
-		ErrUserRolesRequired.Error():           ErrUserRolesRequired,
-		ErrUserEmailRequired.Error():           ErrUserEmailRequired,
-		ErrInputDataRequired.Error():           ErrInputDataRequired,
-		ErrInternalAppError.Error():            ErrInternalAppError,
-		ErrUnknown.Error():                     ErrUnknown,
+		ErrUserNotFound.Error():                    ErrUserNotFound,
+		ErrClientNoAuthOpts.Error():                ErrClientNoAuthOpts,
+		ErrAuthTokenUnathorized.Error():            ErrAuthTokenUnathorized,
+		ErrDomainNotFound.Error():                  ErrDomainNotFound,
+		ErrCredentialNotFound.Error():              ErrCredentialNotFound,
+		ErrProjectNotFound.Error():                 ErrProjectNotFound,
+		ErrUserAlreadyExists.Error():               ErrUserAlreadyExists,
+		ErrRequestValidationError.Error():          ErrRequestValidationError,
+		ErrForbidden.Error():                       ErrForbidden,
+		ErrUnauthorized.Error():                    ErrUnauthorized,
+		ErrInternalServerError.Error():             ErrInternalServerError,
+		ErrCredentialNameRequired.Error():          ErrCredentialNameRequired,
+		ErrCredentialAccessKeyRequired.Error():     ErrCredentialAccessKeyRequired,
+		ErrUserIDRequired.Error():                  ErrUserIDRequired,
+		ErrProjectIDRequired.Error():               ErrProjectIDRequired,
+		ErrGroupIDRequired.Error():                 ErrGroupIDRequired,
+		ErrGroupUserIDsRequired.Error():            ErrGroupUserIDsRequired,
+		ErrGroupNameRequired.Error():               ErrGroupNameRequired,
+		ErrGroupRolesRequired.Error():              ErrGroupRolesRequired,
+		ErrGroupAlreadyExists.Error():              ErrGroupAlreadyExists,
+		ErrGroupNotFound.Error():                   ErrGroupNotFound,
+		ErrFederationNameRequired.Error():          ErrFederationNameRequired,
+		ErrFederationIDRequired.Error():            ErrFederationIDRequired,
+		ErrFederationIssuerRequired.Error():        ErrFederationIssuerRequired,
+		ErrFederationSSOURLRequired.Error():        ErrFederationSSOURLRequired,
+		ErrFederationCertificateIDRequired.Error(): ErrFederationCertificateIDRequired,
+		ErrFederationNotFound.Error():              ErrFederationNotFound,
+		ErrFederationMaxAgeHoursRequired.Error():   ErrFederationMaxAgeHoursRequired,
+		ErrUserOrGroupNotFound.Error():             ErrUserOrGroupNotFound,
+		ErrServiceUserNameRequired.Error():         ErrServiceUserNameRequired,
+		ErrServiceUserPasswordRequired.Error():     ErrServiceUserPasswordRequired,
+		ErrServiceUserRolesRequired.Error():        ErrServiceUserRolesRequired,
+		ErrUserRolesRequired.Error():               ErrUserRolesRequired,
+		ErrUserEmailRequired.Error():               ErrUserEmailRequired,
+		ErrInputDataRequired.Error():               ErrInputDataRequired,
+		ErrInternalAppError.Error():                ErrInternalAppError,
+		ErrUnknown.Error():                         ErrUnknown,
 	}
 )
 
