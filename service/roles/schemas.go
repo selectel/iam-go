@@ -10,7 +10,7 @@ const (
 	AccountOwner Name = "account_owner"
 
 	// User administrator.
-	IAMAdmin Name = "iam_admin"
+	IAMAdmin Name = "iam.admin"
 
 	// Account/Project administrator.
 	Member Name = "member"
