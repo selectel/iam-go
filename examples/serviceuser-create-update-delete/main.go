@@ -9,6 +9,14 @@ import (
 	"github.com/selectel/iam-go/service/serviceusers"
 )
 
+const (
+	// Billing administrator.
+	Billing string = "billing"
+
+	// Account scope.
+	AccountScope string = "account"
+)
+
 var (
 	// KeystoneToken
 	token          = "gAAAAA..."
@@ -44,7 +52,7 @@ func main() {
 		Enabled:  true,
 		Name:     name,
 		Password: password,
-		Roles:    []roles.Role{{Scope: roles.Account, RoleName: roles.Billing}},
+		Roles:    []roles.Role{{Scope: AccountScope, RoleName: Billing}},
 	})
 	if err != nil {
 		fmt.Println(err)

@@ -16,6 +16,12 @@ import (
 )
 
 const (
+	// Account scope.
+	AccountScope string = "account"
+
+	// Account/Project member.
+	Member string = "member"
+
 	usersURL        = "iam/v1/users"
 	usersIDURL      = "iam/v1/users/123"
 	rolesURL        = "iam/v1/users/123/roles"
@@ -44,7 +50,7 @@ func TestList(t *testing.T) {
 					KeystoneID: "123",
 					ID:         "123",
 					Roles: []roles.Role{
-						{Scope: roles.Account, RoleName: roles.Member},
+						{Scope: AccountScope, RoleName: Member},
 					},
 				},
 			}},
@@ -119,7 +125,7 @@ func TestGet(t *testing.T) {
 					KeystoneID: "123",
 					ID:         "123",
 					Roles: []roles.Role{
-						{Scope: roles.Account, RoleName: roles.Member},
+						{Scope: AccountScope, RoleName: Member},
 					},
 				},
 				Groups: []Group{
@@ -258,7 +264,7 @@ func TestCreate(t *testing.T) {
 					ID:         "123",
 				},
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -278,7 +284,7 @@ func TestCreate(t *testing.T) {
 					ID:         "123",
 					KeystoneID: "123",
 					Roles: []roles.Role{
-						{Scope: roles.Account, RoleName: roles.Member},
+						{Scope: AccountScope, RoleName: Member},
 					},
 				},
 			},
@@ -294,7 +300,7 @@ func TestCreate(t *testing.T) {
 					ID:         "123",
 				},
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -416,7 +422,7 @@ func TestAssignRoles(t *testing.T) {
 			args: args{
 				userID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -433,7 +439,7 @@ func TestAssignRoles(t *testing.T) {
 			args: args{
 				userID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -486,7 +492,7 @@ func TestUnassignRoles(t *testing.T) {
 			args: args{
 				userID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -503,7 +509,7 @@ func TestUnassignRoles(t *testing.T) {
 			args: args{
 				userID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {

@@ -11,6 +11,17 @@ import (
 	"github.com/selectel/iam-go/service/users"
 )
 
+const (
+	// Account/Project reader.
+	Reader string = "reader"
+
+	// Account/Project member.
+	Member string = "member"
+
+	// Account scope.
+	AccountScope string = "account"
+)
+
 var (
 	// KeystoneToken
 	token          = "gAAAAA..."
@@ -52,7 +63,7 @@ func main() {
 		AuthType:   users.Local,
 		Email:      email,
 		Federation: nil,
-		Roles:      []roles.Role{{Scope: roles.Account, RoleName: roles.Reader}},
+		Roles:      []roles.Role{{Scope: AccountScope, RoleName: Reader}},
 		GroupIDs:   []string{group.ID},
 	})
 	if err != nil {
@@ -61,11 +72,11 @@ func main() {
 	}
 	fmt.Printf("Step 2: Created User ID: %s Keystone ID: %s\n", user.ID, user.KeystoneID)
 
-	err = groupsAPI.AssignRoles(ctx, group.ID, []roles.Role{{Scope: roles.Account, RoleName: roles.Member}})
+	err = groupsAPI.AssignRoles(ctx, group.ID, []roles.Role{{Scope: AccountScope, RoleName: Member}})
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Step 3: Assigned Role %s with scope %s to Group ID: %s\n", roles.Member, roles.Account, group.ID)
+	fmt.Printf("Step 3: Assigned Role %s with scope %s to Group ID: %s\n", Member, AccountScope, group.ID)
 
 	updatedGroup, err := groupsAPI.Update(ctx, group.ID, groups.UpdateRequest{Name: updatedGroupName,
 		Description: &updatedDescription})

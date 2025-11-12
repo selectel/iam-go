@@ -9,6 +9,14 @@ import (
 	"github.com/selectel/iam-go/service/users"
 )
 
+const (
+	// Billing administrator.
+	Billing string = "billing"
+
+	// Account scope.
+	AccountScope string = "account"
+)
+
 func main() {
 	// KeystoneToken
 	token := "gAAAAA..."
@@ -46,7 +54,7 @@ func main() {
 	var chosenUser *users.User
 	for _, user := range allUsers.Users {
 		for _, role := range user.Roles {
-			if role.RoleName == roles.Billing && user.ID != "account_root" {
+			if role.RoleName == Billing && user.ID != "account_root" {
 				chosenUser = &user
 				break
 			}
@@ -57,18 +65,18 @@ func main() {
 	}
 
 	if chosenUser == nil {
-		fmt.Println("No billing role was found")
+		fmt.Printf("No %s role was found\n", Billing)
 		return
 	}
 
 	// Step 1
-	fmt.Printf("Step 1: User %s with the Billing role was found\n", chosenUser.ID)
+	fmt.Printf("Step 1: User %s with the %s role was found\n", chosenUser.ID, Billing)
 
 	// Unassign the role.
 	err = usersAPI.UnassignRoles(
 		ctx,
 		chosenUser.ID,
-		[]roles.Role{{Scope: roles.Account, RoleName: roles.Billing}},
+		[]roles.Role{{Scope: AccountScope, RoleName: Billing}},
 	)
 
 	// Handle the error.
@@ -78,13 +86,13 @@ func main() {
 	}
 
 	// Step 2
-	fmt.Printf("Step 2: Unassigned the Billing role from User %s \n", chosenUser.ID)
+	fmt.Printf("Step 2: Unassigned the %s role from User %s \n", Billing, chosenUser.ID)
 
 	// Assign the role.
 	err = usersAPI.AssignRoles(
 		ctx,
 		userID,
-		[]roles.Role{{Scope: roles.Account, RoleName: roles.Billing}},
+		[]roles.Role{{Scope: AccountScope, RoleName: Billing}},
 	)
 
 	// Handle the error.
@@ -93,5 +101,5 @@ func main() {
 	}
 
 	// Step 3
-	fmt.Printf("Step 3: Assigned the Billing role to User %s \n", userID)
+	fmt.Printf("Step 3: Assigned the %s role to User %s \n", Billing, userID)
 }
