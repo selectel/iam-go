@@ -40,6 +40,7 @@ func TestList(t *testing.T) {
 					ID:                    "role-id",
 					Scopes:                []string{"account"},
 					SubjectTypes:          []string{"user"},
+					Deprecated:            false,
 				},
 			}},
 			expectedError: nil,

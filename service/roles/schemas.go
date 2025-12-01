@@ -15,6 +15,7 @@ type AvailableRole struct {
 	ID                    string   `json:"id"`
 	Scopes                []string `json:"scopes"`
 	SubjectTypes          []string `json:"subject_types"`
+	Deprecated            bool     `json:"deprecated"`
 }
 
 // ListResponse is a response payload for the GET iam/v1/roles endpoint.

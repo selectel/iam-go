@@ -13,7 +13,8 @@ const TestListRolesResponse = `{
 			"description": "Test role",
 			"id": "role-id",
 			"scopes": ["account"],
-			"subject_types": ["user"]
+			"subject_types": ["user"],
+			"deprecated": false
 		}
 	]
 }`
