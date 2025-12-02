@@ -12,6 +12,14 @@ import (
 	"github.com/selectel/iam-go/service/users"
 )
 
+const (
+	// Account/Project reader.
+	Reader string = "reader"
+
+	// Account scope.
+	AccountScope string = "account"
+)
+
 var (
 	// KeystoneToken
 	token          = "gAAAAA..."
@@ -88,7 +96,7 @@ func main() {
 			ExternalID: userExternalID,
 			ID:         federation.ID,
 		},
-		Roles: []roles.Role{{Scope: roles.Account, RoleName: roles.Reader}},
+		Roles: []roles.Role{{Scope: AccountScope, RoleName: Reader}},
 	})
 	if err != nil {
 		fmt.Println(err)

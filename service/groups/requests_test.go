@@ -17,6 +17,12 @@ import (
 )
 
 const (
+	// Account scope.
+	AccountScope string = "account"
+
+	// Account/Project member.
+	Member string = "member"
+
 	groupsURL   = "iam/v1/groups"
 	groupsIDURL = "iam/v1/groups/123"
 	rolesURL    = "iam/v1/groups/123/roles"
@@ -45,7 +51,7 @@ func TestList(t *testing.T) {
 					Name:        "test_name",
 					Description: "test_description",
 					Roles: []roles.Role{
-						{Scope: roles.Account, RoleName: roles.Member},
+						{Scope: AccountScope, RoleName: Member},
 					},
 				},
 			}},
@@ -120,7 +126,7 @@ func TestGet(t *testing.T) {
 					Name:        "test_name",
 					Description: "test_description",
 					Roles: []roles.Role{
-						{Scope: roles.Account, RoleName: roles.Member},
+						{Scope: AccountScope, RoleName: Member},
 					},
 				},
 				ServiceUsers: []ServiceUser{
@@ -432,7 +438,7 @@ func TestAssignRoles(t *testing.T) {
 			args: args{
 				groupID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -449,7 +455,7 @@ func TestAssignRoles(t *testing.T) {
 			args: args{
 				groupID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -502,7 +508,7 @@ func TestUnassignRoles(t *testing.T) {
 			args: args{
 				groupID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
@@ -519,7 +525,7 @@ func TestUnassignRoles(t *testing.T) {
 			args: args{
 				groupID: "123",
 				roles: []roles.Role{
-					{Scope: roles.Account, RoleName: roles.Member},
+					{Scope: AccountScope, RoleName: Member},
 				},
 			},
 			prepare: func() {
