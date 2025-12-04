@@ -30,8 +30,8 @@ type BaseClient struct {
 	// UserAgent represents a User-Agent to be added to all requests.
 	UserAgent string
 
-	// UserAgentPrefix contains custom prefix to be added to userAgent.
-	UserAgentPrefix string
+	// UserAgentPostfix contains custom postfix to be added to userAgent.
+	UserAgentPostfix string
 }
 
 // DoRequest performs the HTTP request with the current Client.HTTPClient and given User-Agent prefix.

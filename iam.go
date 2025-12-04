@@ -95,10 +95,10 @@ func WithAuthOpts(authOpts *AuthOpts) Option {
 	}
 }
 
-// WithUserAgentPrefix is a functional parameter for Client, used to set a custom prefix.
-func WithUserAgentPrefix(prefix string) Option {
+// WithUserAgentPostfix is a functional parameter for Client, used to set a custom postfix.
+func WithUserAgentPostfix(postfix string) Option {
 	return func(c *Client) {
-		c.baseClient.UserAgentPrefix = prefix
+		c.baseClient.UserAgentPostfix = postfix
 	}
 }
 
@@ -127,10 +127,9 @@ func New(opts ...Option) (*Client, error) {
 
 	appVersion := findModuleVersion()
 	userAgent := appName + "/" + appVersion
-	if c.baseClient.UserAgentPrefix == "" {
-		c.baseClient.UserAgent = userAgent
-	} else {
-		c.baseClient.UserAgent = c.baseClient.UserAgentPrefix + " " + userAgent
+	c.baseClient.UserAgent = userAgent
+	if c.baseClient.UserAgentPostfix != "" {
+		c.baseClient.UserAgent += " " + c.baseClient.UserAgentPostfix
 	}
 
 	c.Users = users.New(c.baseClient)
