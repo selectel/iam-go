@@ -95,10 +95,12 @@ func WithAuthOpts(authOpts *AuthOpts) Option {
 	}
 }
 
-// WithUserAgentPostfix is a functional parameter for Client, used to set a custom postfix.
-func WithUserAgentPostfix(postfix string) Option {
+// WithClientUserAgent is a functional parameter for Client, used to set a custom User-Agent postfix.
+//
+// It is highly recommended to use this option!
+func WithClientUserAgent(userAgent string) Option {
 	return func(c *Client) {
-		c.baseClient.UserAgentPostfix = postfix
+		c.baseClient.ClientUserAgent = userAgent
 	}
 }
 
@@ -128,8 +130,8 @@ func New(opts ...Option) (*Client, error) {
 	appVersion := findModuleVersion()
 	userAgent := appName + "/" + appVersion
 	c.baseClient.UserAgent = userAgent
-	if c.baseClient.UserAgentPostfix != "" {
-		c.baseClient.UserAgent += " " + c.baseClient.UserAgentPostfix
+	if c.baseClient.ClientUserAgent != "" {
+		c.baseClient.UserAgent += " " + c.baseClient.ClientUserAgent
 	}
 
 	c.Users = users.New(c.baseClient)

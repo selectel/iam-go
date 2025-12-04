@@ -41,7 +41,7 @@ func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
-		iam.WithUserAgentPostfix(postfix),
+		iam.WithClientUserAgent(postfix),
 	)
 	if err != nil {
 		fmt.Println(err)
