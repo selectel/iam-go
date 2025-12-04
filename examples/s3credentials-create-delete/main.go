@@ -13,7 +13,7 @@ var (
 	deleteAfterRun = false
 
 	// Prefix to be added to User-Agent.
-	prefix = "iam-go"
+	postfix = "iam-go"
 
 	// ID of the User to create S3 Credentials for.
 	userID = "a1b2c3..."
@@ -29,7 +29,7 @@ func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
-		iam.WithUserAgentPrefix(prefix),
+		iam.WithUserAgentPostfix(postfix),
 	)
 	// Handle the error.
 	if err != nil {
