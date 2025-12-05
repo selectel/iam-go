@@ -21,8 +21,8 @@ func main() {
 	// KeystoneToken
 	token := "gAAAAA..."
 
-	// Prefix to be added to User-Agent.
-	prefix := "iam-go"
+	// Client User-Agent to be added.
+	clientUserAgent := "iam-go"
 
 	// ID of the User to assign role to.
 	userID := "654321_65432"
@@ -30,7 +30,7 @@ func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
-		iam.WithUserAgentPrefix(prefix),
+		iam.WithClientUserAgent(clientUserAgent),
 	)
 	// Handle the error.
 	if err != nil {

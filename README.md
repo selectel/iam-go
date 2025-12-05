@@ -45,6 +45,8 @@ After that initialize `Client` with the retrieved token.
 
 ### Usage example
 
+> [!NOTE] It is highly recommended to use the `WithClientUserAgent` option to set a custom User-Agent for the client.
+
 ```go
 package main
 
@@ -61,13 +63,13 @@ func main() {
     // It should be Service User Token
     token := "gAAAAABeVNzu-..."
 
-    // A Prefix to be added to User-Agent.
-    prefix := "iam-custom"
+    // A client User-Agent.
+    userAgent := "iam-custom"
 
     // Create a new IAM client.
     iamClient, err := iam.New(
     	iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
-    	iam.WithUserAgentPrefix(prefix),
+    	iam.WithClientUserAgent(userAgent),
     )
     // Handle the error.
     if err != nil {
