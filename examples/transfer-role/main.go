@@ -21,7 +21,7 @@ func main() {
 	// KeystoneToken
 	token := "gAAAAA..."
 
-	// Client User-Agent to be added.
+	// Client User-Agent prefix to be prepended to the library User-Agent.
 	clientUserAgent := "iam-go"
 
 	// ID of the User to assign role to.

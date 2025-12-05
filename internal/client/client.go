@@ -30,11 +30,11 @@ type BaseClient struct {
 	// UserAgent represents a User-Agent to be added to all requests.
 	UserAgent string
 
-	// ClientUserAgent contains custom User-Agent postfix to be added.
+	// ClientUserAgent contains custom User-Agent prefix to be prepended to the library User-Agent.
 	ClientUserAgent string
 }
 
-// DoRequest performs the HTTP request with the current Client.HTTPClient and given User-Agent prefix.
+// DoRequest performs the HTTP request with the current Client.HTTPClient and User-Agent header.
 //
 // X-Auth-Token and other optional headers are added automatically.
 func (bc *BaseClient) DoRequest(ctx context.Context, input DoRequestInput) ([]byte, error) {
