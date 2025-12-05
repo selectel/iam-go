@@ -63,7 +63,7 @@ func main() {
     // It should be Service User Token
     token := "gAAAAABeVNzu-..."
 
-    // A client User-Agent.
+    // A client User-Agent prefix to be prepended to the library User-Agent.
     userAgent := "iam-custom"
 
     // Create a new IAM client.

@@ -12,7 +12,7 @@ var (
 	token          = "gAAAAA..."
 	deleteAfterRun = false
 
-	// Client User-Agent to be added.
+	// Client User-Agent prefix to be prepended to the library User-Agent.
 	clientUserAgent = "iam-go"
 
 	// ID of the User to create S3 Credentials for.

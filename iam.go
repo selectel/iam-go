@@ -95,7 +95,8 @@ func WithAuthOpts(authOpts *AuthOpts) Option {
 	}
 }
 
-// WithClientUserAgent is a functional parameter for Client, used to set a custom User-Agent postfix.
+// WithClientUserAgent is a functional parameter for Client, used to set a custom User-Agent prefix.
+// The client User-Agent will be prepended to the library User-Agent (e.g., "custom iam-go/v1.0.0").
 //
 // It is highly recommended to use this option!
 func WithClientUserAgent(userAgent string) Option {
@@ -128,10 +129,9 @@ func New(opts ...Option) (*Client, error) {
 	}
 
 	appVersion := findModuleVersion()
-	userAgent := appName + "/" + appVersion
-	c.baseClient.UserAgent = userAgent
+	c.baseClient.UserAgent = appName + "/" + appVersion
 	if c.baseClient.ClientUserAgent != "" {
-		c.baseClient.UserAgent += " " + c.baseClient.ClientUserAgent
+		c.baseClient.UserAgent = c.baseClient.ClientUserAgent + " " + c.baseClient.UserAgent
 	}
 
 	c.Users = users.New(c.baseClient)
