@@ -25,8 +25,8 @@ var (
 	token          = "gAAAAA..."
 	deleteAfterRun = false
 
-	// Client User-Agent to be added.
-	clientUserAgent = "iam-go"
+	// Prefix to be added to User-Agent.
+	prefix = "iam-go"
 
 	federationName               = "federation_name"
 	federationDescription        = "federation_description"
@@ -45,7 +45,7 @@ func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
-		iam.WithClientUserAgent(clientUserAgent),
+		iam.WithUserAgentPrefix(prefix),
 	)
 	if err != nil {
 		fmt.Println(err)
