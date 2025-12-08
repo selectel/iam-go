@@ -22,8 +22,8 @@ var (
 	token          = "gAAAAA..."
 	deleteAfterRun = false
 
-	// Client User-Agent to be added.
-	clientUserAgent = "iam-go"
+	// Prefix to be added to User-Agent.
+	prefix = "iam-go"
 
 	// Email of the User to create.
 	email = "testmail@example.com"
@@ -33,7 +33,7 @@ func main() {
 	// Create a new IAM client.
 	iamClient, err := iam.New(
 		iam.WithAuthOpts(&iam.AuthOpts{KeystoneToken: token}),
-		iam.WithClientUserAgent(clientUserAgent),
+		iam.WithUserAgentPrefix(prefix),
 	)
 	// Handle the error.
 	if err != nil {
