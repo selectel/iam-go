@@ -96,6 +96,8 @@ func WithAuthOpts(authOpts *AuthOpts) Option {
 }
 
 // WithUserAgentPrefix is a functional parameter for Client, used to set a custom prefix.
+//
+// It is highly recommended to use this option!
 func WithUserAgentPrefix(prefix string) Option {
 	return func(c *Client) {
 		c.baseClient.UserAgentPrefix = prefix

@@ -45,6 +45,8 @@ After that initialize `Client` with the retrieved token.
 
 ### Usage example
 
+> [!NOTE] It is highly recommended to use the `WithUserAgentPrefix` option to set a custom User-Agent for the client.
+
 ```go
 package main
 
