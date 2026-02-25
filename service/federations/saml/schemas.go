@@ -13,7 +13,7 @@ type Federation struct {
 	ForceAuthn         bool   `json:"force_authn"`
 	SessionMaxAgeHours int    `json:"session_max_age_hours"`
 	AutoUsersCreation  bool   `json:"auto_users_creation"`
-	EnableGroupMapping bool   `json:"enable_group_mappings"`
+	EnableGroupMapping bool   `json:"enable_group_mappings"` //nolint:tagliatelle
 }
 
 // ListResponse represents all federations in account.
@@ -41,7 +41,7 @@ type CreateRequest struct {
 	ForceAuthn         bool   `json:"force_authn,omitempty"`
 	SessionMaxAgeHours int    `json:"session_max_age_hours"`
 	AutoUsersCreation  bool   `json:"auto_users_creation"`
-	EnableGroupMapping bool   `json:"enable_group_mappings"`
+	EnableGroupMapping bool   `json:"enable_group_mappings"` //nolint:tagliatelle
 }
 
 // UpdateRequest is used to set options for Update method.
@@ -55,7 +55,7 @@ type UpdateRequest struct {
 	ForceAuthn         *bool   `json:"force_authn,omitempty"`
 	SessionMaxAgeHours int     `json:"session_max_age_hours,omitempty"`
 	AutoUsersCreation  *bool   `json:"auto_users_creation,omitempty"`
-	EnableGroupMapping *bool   `json:"enable_group_mappings,omitempty"`
+	EnableGroupMapping *bool   `json:"enable_group_mappings,omitempty"` //nolint:tagliatelle
 }
 
 // FederationPreview represents preview information about Federation.

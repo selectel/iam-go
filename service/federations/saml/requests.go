@@ -219,15 +219,18 @@ func (s *Service) Delete(ctx context.Context, federationID string) error {
 	return nil
 }
 
-// Preview returns preview information of Federation using federationID or alias.
-func (s *Service) Preview(ctx context.Context, federationID string) (*FederationPreview, error) {
+func (s *Service) getFederationResource(
+	ctx context.Context, federationID string, segments []string, output interface{},
+) error {
 	if federationID == "" {
-		return nil, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
+		return iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
 	}
 
-	path, err := url.JoinPath(apiVersion, "federations", "saml", federationID, "preview")
+	pathSegments := append([]string{apiVersion, "federations", "saml", federationID}, segments...)
+
+	path, err := url.JoinPath(pathSegments[0], pathSegments[1:]...)
 	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
 	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
@@ -237,13 +240,23 @@ func (s *Service) Preview(ctx context.Context, federationID string) (*Federation
 	})
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
-		return nil, err
+		return err
 	}
 
-	var preview FederationPreview
-	err = client.UnmarshalJSON(response, &preview)
+	err = client.UnmarshalJSON(response, output)
 	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	return nil
+}
+
+// Preview returns preview information of Federation using federationID or alias.
+func (s *Service) Preview(ctx context.Context, federationID string) (*FederationPreview, error) {
+	var preview FederationPreview
+	err := s.getFederationResource(ctx, federationID, []string{"preview"}, &preview)
+	if err != nil {
+		return nil, err
 	}
 
 	return &preview, nil
@@ -251,29 +264,10 @@ func (s *Service) Preview(ctx context.Context, federationID string) (*Federation
 
 // GetGroupMappings returns a list of mappings for the Federation.
 func (s *Service) GetGroupMappings(ctx context.Context, federationID string) (*GroupMappingsResponse, error) {
-	if federationID == "" {
-		return nil, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-
-	path, err := url.JoinPath(apiVersion, "federations", "saml", federationID, "group-mappings")
-	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   nil,
-		Method: http.MethodGet,
-		Path:   path,
-	})
-	if err != nil {
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return nil, err
-	}
-
 	var mappings GroupMappingsResponse
-	err = client.UnmarshalJSON(response, &mappings)
+	err := s.getFederationResource(ctx, federationID, []string{"group-mappings"}, &mappings)
 	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return nil, err
 	}
 
 	return &mappings, nil
