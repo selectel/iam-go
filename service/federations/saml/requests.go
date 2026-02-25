@@ -310,18 +310,17 @@ func (s *Service) UpdateGroupMappings(
 	return &mappings, nil
 }
 
-// AddExternalGroupMapping creates mapping between internal and external group.
-func (s *Service) AddExternalGroupMapping(
-	ctx context.Context, federationID, groupID, externalGroupID string,
-) error {
+func buildExternalGroupMappingPath(
+	federationID, groupID, externalGroupID string,
+) (string, error) {
 	if federationID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
+		return "", iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
 	}
 	if groupID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
+		return "", iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
 	}
 	if externalGroupID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrInputDataRequired, Desc: "No externalGroupID was provided."}
+		return "", iamerrors.Error{Err: iamerrors.ErrInputDataRequired, Desc: "No externalGroupID was provided."}
 	}
 
 	path, err := url.JoinPath(
@@ -335,7 +334,19 @@ func (s *Service) AddExternalGroupMapping(
 		externalGroupID,
 	)
 	if err != nil {
-		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return "", iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	return path, nil
+}
+
+// AddExternalGroupMapping creates mapping between internal and external group.
+func (s *Service) AddExternalGroupMapping(
+	ctx context.Context, federationID, groupID, externalGroupID string,
+) error {
+	path, err := buildExternalGroupMappingPath(federationID, groupID, externalGroupID)
+	if err != nil {
+		return err
 	}
 
 	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
@@ -355,28 +366,9 @@ func (s *Service) AddExternalGroupMapping(
 func (s *Service) DeleteExternalGroupMapping(
 	ctx context.Context, federationID, groupID, externalGroupID string,
 ) error {
-	if federationID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-	if groupID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
-	}
-	if externalGroupID == "" {
-		return iamerrors.Error{Err: iamerrors.ErrInputDataRequired, Desc: "No externalGroupID was provided."}
-	}
-
-	path, err := url.JoinPath(
-		apiVersion,
-		"federations",
-		"saml",
-		federationID,
-		"group-mappings",
-		groupID,
-		"external-groups",
-		externalGroupID,
-	)
+	path, err := buildExternalGroupMappingPath(federationID, groupID, externalGroupID)
 	if err != nil {
-		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return err
 	}
 
 	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
@@ -396,28 +388,9 @@ func (s *Service) DeleteExternalGroupMapping(
 func (s *Service) ExternalGroupMappingExists(
 	ctx context.Context, federationID, groupID, externalGroupID string,
 ) (bool, error) {
-	if federationID == "" {
-		return false, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-	if groupID == "" {
-		return false, iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
-	}
-	if externalGroupID == "" {
-		return false, iamerrors.Error{Err: iamerrors.ErrInputDataRequired, Desc: "No externalGroupID was provided."}
-	}
-
-	path, err := url.JoinPath(
-		apiVersion,
-		"federations",
-		"saml",
-		federationID,
-		"group-mappings",
-		groupID,
-		"external-groups",
-		externalGroupID,
-	)
+	path, err := buildExternalGroupMappingPath(federationID, groupID, externalGroupID)
 	if err != nil {
-		return false, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return false, err
 	}
 
 	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
