@@ -11,21 +11,24 @@ import (
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
 	"github.com/selectel/iam-go/service/federations/saml/certificates"
+	"github.com/selectel/iam-go/service/federations/saml/groupmappings"
 )
 
 const apiVersion = "v1"
 
 // Service is used to communicate with the Federations API.
 type Service struct {
-	Certificates *certificates.Service
-	baseClient   *client.BaseClient
+	Certificates  *certificates.Service
+	GroupMappings *groupmappings.Service
+	baseClient    *client.BaseClient
 }
 
 // New Initialises Service with the given client.
 func New(baseClient *client.BaseClient) *Service {
 	return &Service{
-		Certificates: certificates.New(baseClient),
-		baseClient:   baseClient,
+		Certificates:  certificates.New(baseClient),
+		GroupMappings: groupmappings.New(baseClient),
+		baseClient:    baseClient,
 	}
 }
 
@@ -56,29 +59,10 @@ func (s *Service) List(ctx context.Context) (*ListResponse, error) {
 
 // Get returns an info of Federation with federationID.
 func (s *Service) Get(ctx context.Context, federationID string) (*GetResponse, error) {
-	if federationID == "" {
-		return nil, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-
-	path, err := url.JoinPath(apiVersion, "federations", "saml", federationID)
-	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   nil,
-		Method: http.MethodGet,
-		Path:   path,
-	})
-	if err != nil {
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return nil, err
-	}
-
 	var federation GetResponse
-	err = client.UnmarshalJSON(response, &federation)
+	err := s.getFederationResource(ctx, federationID, nil, &federation)
 	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return nil, err
 	}
 	return &federation, nil
 }
@@ -109,6 +93,17 @@ func (s *Service) Exists(ctx context.Context, federationID string) (bool, error)
 	}
 
 	return true, nil
+}
+
+// Preview returns preview information of Federation using federationID or alias.
+func (s *Service) Preview(ctx context.Context, federationID string) (*FederationPreview, error) {
+	var preview FederationPreview
+	err := s.getFederationResource(ctx, federationID, []string{"preview"}, &preview)
+	if err != nil {
+		return nil, err
+	}
+
+	return &preview, nil
 }
 
 // Create creates a new Federation.
@@ -249,165 +244,4 @@ func (s *Service) getFederationResource(
 	}
 
 	return nil
-}
-
-// Preview returns preview information of Federation using federationID or alias.
-func (s *Service) Preview(ctx context.Context, federationID string) (*FederationPreview, error) {
-	var preview FederationPreview
-	err := s.getFederationResource(ctx, federationID, []string{"preview"}, &preview)
-	if err != nil {
-		return nil, err
-	}
-
-	return &preview, nil
-}
-
-// GetGroupMappings returns a list of mappings for the Federation.
-func (s *Service) GetGroupMappings(ctx context.Context, federationID string) (*GroupMappingsResponse, error) {
-	var mappings GroupMappingsResponse
-	err := s.getFederationResource(ctx, federationID, []string{"group-mappings"}, &mappings)
-	if err != nil {
-		return nil, err
-	}
-
-	return &mappings, nil
-}
-
-// UpdateGroupMappings updates mappings for the Federation.
-func (s *Service) UpdateGroupMappings(
-	ctx context.Context, federationID string, input GroupMappingsRequest,
-) (*GroupMappingsResponse, error) {
-	if federationID == "" {
-		return nil, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-
-	path, err := url.JoinPath(apiVersion, "federations", "saml", federationID, "group-mappings")
-	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	body, err := json.Marshal(input)
-	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   bytes.NewReader(body),
-		Method: http.MethodPatch,
-		Path:   path,
-	})
-	if err != nil {
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return nil, err
-	}
-
-	var mappings GroupMappingsResponse
-	err = client.UnmarshalJSON(response, &mappings)
-	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	return &mappings, nil
-}
-
-func buildExternalGroupMappingPath(
-	federationID, groupID, externalGroupID string,
-) (string, error) {
-	if federationID == "" {
-		return "", iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
-	}
-	if groupID == "" {
-		return "", iamerrors.Error{Err: iamerrors.ErrGroupIDRequired, Desc: "No groupID was provided."}
-	}
-	if externalGroupID == "" {
-		return "", iamerrors.Error{Err: iamerrors.ErrInputDataRequired, Desc: "No externalGroupID was provided."}
-	}
-
-	path, err := url.JoinPath(
-		apiVersion,
-		"federations",
-		"saml",
-		federationID,
-		"group-mappings",
-		groupID,
-		"external-groups",
-		externalGroupID,
-	)
-	if err != nil {
-		return "", iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-
-	return path, nil
-}
-
-// AddExternalGroupMapping creates mapping between internal and external group.
-func (s *Service) AddExternalGroupMapping(
-	ctx context.Context, federationID, groupID, externalGroupID string,
-) error {
-	path, err := buildExternalGroupMappingPath(federationID, groupID, externalGroupID)
-	if err != nil {
-		return err
-	}
-
-	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   nil,
-		Method: http.MethodPut,
-		Path:   path,
-	})
-	if err != nil {
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return err
-	}
-
-	return nil
-}
-
-// DeleteExternalGroupMapping deletes mapping between internal and external group.
-func (s *Service) DeleteExternalGroupMapping(
-	ctx context.Context, federationID, groupID, externalGroupID string,
-) error {
-	path, err := buildExternalGroupMappingPath(federationID, groupID, externalGroupID)
-	if err != nil {
-		return err
-	}
-
-	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   nil,
-		Method: http.MethodDelete,
-		Path:   path,
-	})
-	if err != nil {
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return err
-	}
-
-	return nil
-}
-
-// ExternalGroupMappingExists checks that internal and external groups are mapped.
-func (s *Service) ExternalGroupMappingExists(
-	ctx context.Context, federationID, groupID, externalGroupID string,
-) (bool, error) {
-	path, err := buildExternalGroupMappingPath(federationID, groupID, externalGroupID)
-	if err != nil {
-		return false, err
-	}
-
-	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
-		Body:   nil,
-		Method: http.MethodHead,
-		Path:   path,
-	})
-	if err != nil {
-		if errors.Is(err, iamerrors.ErrFederationNotFound) ||
-			errors.Is(err, iamerrors.ErrGroupNotFound) ||
-			errors.Is(err, iamerrors.ErrUserOrGroupNotFound) {
-			return false, nil
-		}
-
-		//nolint:wrapcheck // DoRequest already wraps the error.
-		return false, err
-	}
-
-	return true, nil
 }
