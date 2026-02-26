@@ -293,7 +293,7 @@ func (s *Service) UpdateGroupMappings(
 
 	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   bytes.NewReader(body),
-		Method: http.MethodPut,
+		Method: http.MethodPatch,
 		Path:   path,
 	})
 	if err != nil {
