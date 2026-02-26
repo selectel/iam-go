@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	federationGroupMappingsURL         = "v1/federations/saml/123/group-mappings"
-	federationExternalGroupMappingURL  = "v1/federations/saml/123/group-mappings/456/external-groups/external-group"
+	federationGroupMappingsURL        = "v1/federations/saml/123/group-mappings"
+	federationExternalGroupMappingURL = "v1/federations/saml/123/group-mappings/456/external-groups/external-group"
 )
 
 func TestList(t *testing.T) {
@@ -340,4 +340,3 @@ func TestExists(t *testing.T) {
 		})
 	}
 }
-

@@ -15,4 +15,3 @@ type GroupMappingsRequest struct {
 type GroupMappingsResponse struct {
 	GroupMappings []GroupMapping `json:"group_mappings"`
 }
-
