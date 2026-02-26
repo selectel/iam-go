@@ -618,7 +618,7 @@ func TestUpdateGroupMappings(t *testing.T) {
 			name: "ok",
 			prepare: func() {
 				httpmock.RegisterResponder(
-					http.MethodPut, testdata.TestURL+federationGroupMappingsURL,
+					http.MethodPatch, testdata.TestURL+federationGroupMappingsURL,
 					func(r *http.Request) (*http.Response, error) {
 						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestGroupMappingsResponse)
 						return resp, nil
@@ -646,7 +646,7 @@ func TestUpdateGroupMappings(t *testing.T) {
 			name: "error",
 			prepare: func() {
 				httpmock.RegisterResponder(
-					http.MethodPut, testdata.TestURL+federationGroupMappingsURL,
+					http.MethodPatch, testdata.TestURL+federationGroupMappingsURL,
 					func(r *http.Request) (*http.Response, error) {
 						resp := httpmock.NewStringResponse(http.StatusForbidden, testdata.TestDoRequestErr)
 						return resp, nil
