@@ -4,27 +4,31 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
 	"github.com/selectel/iam-go/service/federations/saml/certificates"
+	"github.com/selectel/iam-go/service/federations/saml/groupmappings"
 )
 
 const apiVersion = "v1"
 
 // Service is used to communicate with the Federations API.
 type Service struct {
-	Certificates *certificates.Service
-	baseClient   *client.BaseClient
+	Certificates  *certificates.Service
+	GroupMappings *groupmappings.Service
+	baseClient    *client.BaseClient
 }
 
 // New Initialises Service with the given client.
 func New(baseClient *client.BaseClient) *Service {
 	return &Service{
-		Certificates: certificates.New(baseClient),
-		baseClient:   baseClient,
+		Certificates:  certificates.New(baseClient),
+		GroupMappings: groupmappings.New(baseClient),
+		baseClient:    baseClient,
 	}
 }
 
@@ -55,31 +59,51 @@ func (s *Service) List(ctx context.Context) (*ListResponse, error) {
 
 // Get returns an info of Federation with federationID.
 func (s *Service) Get(ctx context.Context, federationID string) (*GetResponse, error) {
+	var federation GetResponse
+	err := s.getFederationResource(ctx, federationID, nil, &federation)
+	if err != nil {
+		return nil, err
+	}
+	return &federation, nil
+}
+
+// Exists checks that Federation with federationID exists.
+func (s *Service) Exists(ctx context.Context, federationID string) (bool, error) {
 	if federationID == "" {
-		return nil, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
+		return false, iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
 	}
 
 	path, err := url.JoinPath(apiVersion, "federations", "saml", federationID)
 	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+		return false, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
-	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
+	_, err = s.baseClient.DoRequest(ctx, client.DoRequestInput{
 		Body:   nil,
-		Method: http.MethodGet,
+		Method: http.MethodHead,
 		Path:   path,
 	})
 	if err != nil {
+		if errors.Is(err, iamerrors.ErrFederationNotFound) {
+			return false, nil
+		}
+
 		//nolint:wrapcheck // DoRequest already wraps the error.
+		return false, err
+	}
+
+	return true, nil
+}
+
+// Preview returns preview information of Federation using federationID or alias.
+func (s *Service) Preview(ctx context.Context, federationID string) (*FederationPreview, error) {
+	var preview FederationPreview
+	err := s.getFederationResource(ctx, federationID, []string{"preview"}, &preview)
+	if err != nil {
 		return nil, err
 	}
 
-	var federation GetResponse
-	err = client.UnmarshalJSON(response, &federation)
-	if err != nil {
-		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
-	}
-	return &federation, nil
+	return &preview, nil
 }
 
 // Create creates a new Federation.
@@ -185,6 +209,38 @@ func (s *Service) Delete(ctx context.Context, federationID string) error {
 	if err != nil {
 		//nolint:wrapcheck // DoRequest already wraps the error.
 		return err
+	}
+
+	return nil
+}
+
+func (s *Service) getFederationResource(
+	ctx context.Context, federationID string, segments []string, output interface{},
+) error {
+	if federationID == "" {
+		return iamerrors.Error{Err: iamerrors.ErrFederationIDRequired, Desc: "No federationID was provided."}
+	}
+
+	pathSegments := append([]string{apiVersion, "federations", "saml", federationID}, segments...)
+
+	path, err := url.JoinPath(pathSegments[0], pathSegments[1:]...)
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   nil,
+		Method: http.MethodGet,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return err
+	}
+
+	err = client.UnmarshalJSON(response, output)
+	if err != nil {
+		return iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
 	}
 
 	return nil

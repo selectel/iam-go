@@ -119,11 +119,14 @@ func TestGet(t *testing.T) {
 					AccountID:          "123",
 					Name:               "test_name",
 					Description:        "test_description",
+					Alias:              "test_alias",
 					Issuer:             "test_issuer",
 					SSOUrl:             "test_sso_url",
 					SignAuthnRequests:  true,
 					ForceAuthn:         true,
 					SessionMaxAgeHours: 1,
+					AutoUsersCreation:  true,
+					EnableGroupMapping: true,
 				},
 			},
 			expectedError: nil,
@@ -200,11 +203,14 @@ func TestCreate(t *testing.T) {
 					AccountID:          "123",
 					Name:               "test_name",
 					Description:        "test_description",
+					Alias:              "test_alias",
 					Issuer:             "test_issuer",
 					SSOUrl:             "test_sso_url",
 					SignAuthnRequests:  true,
 					ForceAuthn:         true,
 					SessionMaxAgeHours: 1,
+					AutoUsersCreation:  true,
+					EnableGroupMapping: true,
 				},
 			},
 			expectedError: nil,
@@ -280,11 +286,14 @@ func TestUpdate(t *testing.T) {
 					AccountID:          "123",
 					Name:               "test_name",
 					Description:        "test_description",
+					Alias:              "test_alias",
 					Issuer:             "test_issuer",
 					SSOUrl:             "test_sso_url",
 					SignAuthnRequests:  true,
 					ForceAuthn:         true,
 					SessionMaxAgeHours: 1,
+					AutoUsersCreation:  true,
+					EnableGroupMapping: true,
 				},
 			},
 			expectedError: nil,
@@ -386,6 +395,144 @@ func TestDelete(t *testing.T) {
 			err := federationsAPI.Delete(ctx, "123")
 
 			require.ErrorIs(err, tt.expectedError)
+		})
+	}
+}
+
+func TestExists(t *testing.T) {
+	tests := []struct {
+		name           string
+		prepare        func()
+		expectedExists bool
+		expectedError  error
+	}{
+		{
+			name: "exists",
+			prepare: func() {
+				httpmock.RegisterResponder(
+					http.MethodHead, testdata.TestURL+federationsIDURL,
+					func(r *http.Request) (*http.Response, error) {
+						resp := httpmock.NewStringResponse(http.StatusOK, "")
+						return resp, nil
+					})
+			},
+			expectedExists: true,
+			expectedError:  nil,
+		},
+		{
+			name: "not found",
+			prepare: func() {
+				httpmock.RegisterResponder(
+					http.MethodHead, testdata.TestURL+federationsIDURL,
+					func(r *http.Request) (*http.Response, error) {
+						resp := httpmock.NewStringResponse(http.StatusNotFound, testdata.TestFederationNotFoundErr)
+						return resp, nil
+					})
+			},
+			expectedExists: false,
+			expectedError:  nil,
+		},
+		{
+			name: "error",
+			prepare: func() {
+				httpmock.RegisterResponder(
+					http.MethodHead, testdata.TestURL+federationsIDURL,
+					func(r *http.Request) (*http.Response, error) {
+						resp := httpmock.NewStringResponse(http.StatusForbidden, testdata.TestDoRequestErr)
+						return resp, nil
+					})
+			},
+			expectedExists: false,
+			expectedError:  iamerrors.ErrForbidden,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert := assert.New(t)
+			require := require.New(t)
+
+			federationsAPI := New(&client.BaseClient{
+				HTTPClient: &http.Client{},
+				APIUrl:     testdata.TestURL,
+				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
+			})
+
+			httpmock.ActivateNonDefault(federationsAPI.baseClient.HTTPClient)
+			defer httpmock.DeactivateAndReset()
+
+			tt.prepare()
+
+			ctx := context.Background()
+			exists, err := federationsAPI.Exists(ctx, "123")
+
+			require.ErrorIs(err, tt.expectedError)
+			assert.Equal(tt.expectedExists, exists)
+		})
+	}
+}
+
+func TestPreview(t *testing.T) {
+	tests := []struct {
+		name             string
+		prepare          func()
+		expectedResponse *FederationPreview
+		expectedError    error
+	}{
+		{
+			name: "ok",
+			prepare: func() {
+				httpmock.RegisterResponder(
+					http.MethodGet, testdata.TestURL+federationsIDURL+"/preview",
+					func(r *http.Request) (*http.Response, error) {
+						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestPreviewFederationResponse)
+						return resp, nil
+					})
+			},
+			expectedResponse: &FederationPreview{
+				ID:          "123",
+				Name:        "test_name",
+				Description: "test_description",
+				Alias:       "test_alias",
+			},
+			expectedError: nil,
+		},
+		{
+			name: "error",
+			prepare: func() {
+				httpmock.RegisterResponder(
+					http.MethodGet, testdata.TestURL+federationsIDURL+"/preview",
+					func(r *http.Request) (*http.Response, error) {
+						resp := httpmock.NewStringResponse(http.StatusForbidden, testdata.TestDoRequestErr)
+						return resp, nil
+					})
+			},
+			expectedResponse: nil,
+			expectedError:    iamerrors.ErrForbidden,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert := assert.New(t)
+			require := require.New(t)
+
+			federationsAPI := New(&client.BaseClient{
+				HTTPClient: &http.Client{},
+				APIUrl:     testdata.TestURL,
+				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
+			})
+
+			httpmock.ActivateNonDefault(federationsAPI.baseClient.HTTPClient)
+			defer httpmock.DeactivateAndReset()
+
+			tt.prepare()
+
+			ctx := context.Background()
+			actual, err := federationsAPI.Preview(ctx, "123")
+
+			require.ErrorIs(err, tt.expectedError)
+			assert.Equal(tt.expectedResponse, actual)
 		})
 	}
 }
