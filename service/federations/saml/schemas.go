@@ -35,6 +35,7 @@ type GetResponse struct {
 type CreateRequest struct {
 	Name               string `json:"name"`
 	Description        string `json:"description"`
+	Alias              string `json:"alias,omitempty"`
 	Issuer             string `json:"issuer"`
 	SSOUrl             string `json:"sso_url"`
 	SignAuthnRequests  bool   `json:"sign_authn_requests,omitempty"`
