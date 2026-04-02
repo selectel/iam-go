@@ -82,43 +82,62 @@ func (s *Service) Get(ctx context.Context, federationID string) (*GetResponse, e
 	return &federation, nil
 }
 
-// Create creates a new OIDC Federation.
-func (s *Service) Create(ctx context.Context, input CreateRequest) (*CreateResponse, error) {
+func validateCreateRequest(input CreateRequest) error {
 	if input.Name == "" {
-		return nil, iamerrors.Error{
+		return iamerrors.Error{
 			Err:  iamerrors.ErrFederationNameRequired,
 			Desc: "No Name for Federation was provided.",
 		}
 	}
+	if input.Issuer == "" {
+		return iamerrors.Error{
+			Err:  iamerrors.ErrFederationIssuerRequired,
+			Desc: "No Issuer for Federation was provided.",
+		}
+	}
 	if input.ClientID == "" {
-		return nil, iamerrors.Error{
+		return iamerrors.Error{
 			Err:  iamerrors.ErrFederationClientIDRequired,
 			Desc: "No Client ID for Federation was provided.",
 		}
 	}
+	if input.ClientSecret == "" {
+		return iamerrors.Error{
+			Err:  iamerrors.ErrFederationClientSecretRequired,
+			Desc: "No Client Secret for Federation was provided.",
+		}
+	}
 	if input.AuthURL == "" {
-		return nil, iamerrors.Error{
+		return iamerrors.Error{
 			Err:  iamerrors.ErrFederationAuthURLRequired,
 			Desc: "No Auth URL for Federation was provided.",
 		}
 	}
 	if input.TokenURL == "" {
-		return nil, iamerrors.Error{
+		return iamerrors.Error{
 			Err:  iamerrors.ErrFederationTokenURLRequired,
 			Desc: "No Token URL for Federation was provided.",
 		}
 	}
 	if input.JWKSURL == "" {
-		return nil, iamerrors.Error{
+		return iamerrors.Error{
 			Err:  iamerrors.ErrFederationJWKSURLRequired,
 			Desc: "No JWKS URL for Federation was provided.",
 		}
 	}
 	if input.SessionMaxAgeHours == 0 {
-		return nil, iamerrors.Error{
+		return iamerrors.Error{
 			Err:  iamerrors.ErrFederationMaxAgeHoursRequired,
 			Desc: "No Max Age Hours for Federation was provided.",
 		}
+	}
+	return nil
+}
+
+// Create creates a new OIDC Federation.
+func (s *Service) Create(ctx context.Context, input CreateRequest) (*CreateResponse, error) {
+	if err := validateCreateRequest(input); err != nil {
+		return nil, err
 	}
 
 	path, err := url.JoinPath(apiVersion, "federations", "oidc")

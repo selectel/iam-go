@@ -45,7 +45,7 @@ func TestList(t *testing.T) {
 						ClientID:           "test_client_id",
 						AuthURL:            "https://idp.example.com/authorize",
 						TokenURL:           "https://idp.example.com/token",
-						JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+						JWKSUrl:            "https://idp.example.com/.well-known/jwks.json",
 						SessionMaxAgeHours: 24,
 					},
 				},
@@ -119,7 +119,7 @@ func TestGet(t *testing.T) {
 					ClientSecret:       "test_client_secret",
 					AuthURL:            "https://idp.example.com/authorize",
 					TokenURL:           "https://idp.example.com/token",
-					JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+					JWKSUrl:            "https://idp.example.com/.well-known/jwks.json",
 					SessionMaxAgeHours: 24,
 					AutoUsersCreation:  true,
 					EnableGroupMapping: true,
@@ -191,7 +191,7 @@ func TestCreate(t *testing.T) {
 				ClientSecret:       "test_client_secret",
 				AuthURL:            "https://idp.example.com/authorize",
 				TokenURL:           "https://idp.example.com/token",
-				JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+				JWKSUrl:            "https://idp.example.com/.well-known/jwks.json",
 				SessionMaxAgeHours: 24,
 			},
 			expectedResponse: &CreateResponse{
@@ -205,7 +205,7 @@ func TestCreate(t *testing.T) {
 					ClientSecret:       "test_client_secret",
 					AuthURL:            "https://idp.example.com/authorize",
 					TokenURL:           "https://idp.example.com/token",
-					JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+					JWKSUrl:            "https://idp.example.com/.well-known/jwks.json",
 					SessionMaxAgeHours: 24,
 					AutoUsersCreation:  true,
 					EnableGroupMapping: true,
@@ -228,7 +228,7 @@ func TestCreate(t *testing.T) {
 				ClientID:           "test_client_id",
 				AuthURL:            "https://idp.example.com/authorize",
 				TokenURL:           "https://idp.example.com/token",
-				JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+				JWKSUrl:            "https://idp.example.com/.well-known/jwks.json",
 				SessionMaxAgeHours: 24,
 			},
 			expectedResponse: nil,
@@ -315,7 +315,7 @@ func TestUpdate(t *testing.T) {
 				ClientID:    "test_client_id",
 				AuthURL:     "https://idp.example.com/authorize",
 				TokenURL:    "https://idp.example.com/token",
-				JWKSURL:     "https://idp.example.com/.well-known/jwks.json",
+				JWKSUrl:     "https://idp.example.com/.well-known/jwks.json",
 			})
 
 			require.ErrorIs(err, tt.expectedError)
