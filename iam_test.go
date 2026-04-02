@@ -10,6 +10,7 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	baseclient "github.com/selectel/iam-go/internal/client"
+	"github.com/selectel/iam-go/service/federations/oidc"
 	"github.com/selectel/iam-go/service/federations/saml"
 	"github.com/selectel/iam-go/service/groups"
 	"github.com/selectel/iam-go/service/roles"
@@ -66,6 +67,7 @@ func TestNew(t *testing.T) {
 					Roles:           roles.New(baseClient),
 					S3Credentials:   s3credentials.New(baseClient),
 					SAMLFederations: saml.New(baseClient),
+					OIDCFederations: oidc.New(baseClient),
 				}
 			},
 			expectedError: nil,
@@ -110,6 +112,7 @@ func TestNew(t *testing.T) {
 					Roles:           roles.New(baseClient),
 					S3Credentials:   s3credentials.New(baseClient),
 					SAMLFederations: saml.New(baseClient),
+					OIDCFederations: oidc.New(baseClient),
 				}
 			},
 			expectedError: nil,
@@ -147,6 +150,7 @@ func TestNew(t *testing.T) {
 					Roles:           roles.New(baseClient),
 					S3Credentials:   s3credentials.New(baseClient),
 					SAMLFederations: saml.New(baseClient),
+					OIDCFederations: oidc.New(baseClient),
 				}
 			},
 			expectedError: nil,
