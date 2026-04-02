@@ -54,11 +54,12 @@ type UpdateRequest struct {
 	Name               string  `json:"name,omitempty"`
 	Description        *string `json:"description,omitempty"`
 	Alias              string  `json:"alias,omitempty"`
+	Issuer             string  `json:"issuer"`
 	ClientID           string  `json:"client_id,omitempty"`
 	ClientSecret       string  `json:"client_secret,omitempty"`
 	AuthURL            string  `json:"auth_url,omitempty"`
 	TokenURL           string  `json:"token_url,omitempty"`
-	JWKSUrl            string  `json:"jwks_url,omitempty"` //nolint:tagliatelle
+	JWKSURL            string  `json:"jwks_url,omitempty"` //nolint:tagliatelle
 	SessionMaxAgeHours int     `json:"session_max_age_hours,omitempty"`
 	AutoUsersCreation  *bool   `json:"auto_users_creation,omitempty"`
 	EnableGroupMapping *bool   `json:"enable_group_mappings,omitempty"` //nolint:tagliatelle

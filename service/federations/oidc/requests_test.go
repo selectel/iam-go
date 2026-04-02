@@ -322,7 +322,7 @@ func TestUpdate(t *testing.T) {
 				ClientID:    "test_client_id",
 				AuthURL:     "https://idp.example.com/authorize",
 				TokenURL:    "https://idp.example.com/token",
-				JWKSUrl:     "https://idp.example.com/.well-known/jwks.json",
+				JWKSURL:     "https://idp.example.com/.well-known/jwks.json",
 			})
 
 			require.ErrorIs(err, tt.expectedError)

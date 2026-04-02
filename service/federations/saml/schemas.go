@@ -8,7 +8,7 @@ type Federation struct {
 	Description        string `json:"description"`
 	Alias              string `json:"alias"`
 	Issuer             string `json:"issuer"`
-	SSOURL             string `json:"sso_url"`
+	SSOURL             string `json:"sso_url"` //nolint:tagliatelle
 	SignAuthnRequests  bool   `json:"sign_authn_requests"`
 	ForceAuthn         bool   `json:"force_authn"`
 	SessionMaxAgeHours int    `json:"session_max_age_hours"`
