@@ -1,4 +1,4 @@
-package saml
+package oidc
 
 import (
 	"context"
@@ -11,17 +11,12 @@ import (
 
 	"github.com/selectel/iam-go/iamerrors"
 	"github.com/selectel/iam-go/internal/client"
-	"github.com/selectel/iam-go/service/federations/saml/testdata"
+	"github.com/selectel/iam-go/service/federations/oidc/testdata"
 )
 
 const (
-	federationsURL   = "v1/federations/saml"
-	federationsIDURL = "v1/federations/saml/123"
-)
-
-// Convenience vars for bool values.
-var (
-	iTrue = true
+	federationsURL   = "v1/federations/oidc"
+	federationsIDURL = "v1/federations/oidc/123"
 )
 
 func TestList(t *testing.T) {
@@ -47,11 +42,13 @@ func TestList(t *testing.T) {
 						AccountID:          "123",
 						Name:               "test_name",
 						Description:        "test_description",
-						Issuer:             "test_issuer",
-						SSOURL:             "test_sso_url",
-						SignAuthnRequests:  true,
-						ForceAuthn:         true,
-						SessionMaxAgeHours: 1,
+						Issuer:             "https://idp.example.com",
+						ClientID:           "test_client_id",
+						ClientSecret:       "test_client_secret",
+						AuthURL:            "https://idp.example.com/authorize",
+						TokenURL:           "https://idp.example.com/token",
+						JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+						SessionMaxAgeHours: 24,
 					},
 				},
 			},
@@ -120,11 +117,13 @@ func TestGet(t *testing.T) {
 					Name:               "test_name",
 					Description:        "test_description",
 					Alias:              "test_alias",
-					Issuer:             "test_issuer",
-					SSOURL:             "test_sso_url",
-					SignAuthnRequests:  true,
-					ForceAuthn:         true,
-					SessionMaxAgeHours: 1,
+					Issuer:             "https://idp.example.com",
+					ClientID:           "test_client_id",
+					ClientSecret:       "test_client_secret",
+					AuthURL:            "https://idp.example.com/authorize",
+					TokenURL:           "https://idp.example.com/token",
+					JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+					SessionMaxAgeHours: 24,
 					AutoUsersCreation:  true,
 					EnableGroupMapping: true,
 				},
@@ -184,18 +183,20 @@ func TestCreate(t *testing.T) {
 			prepare: func() {
 				httpmock.RegisterResponder(
 					http.MethodPost, testdata.TestURL+federationsURL, func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusCreated, testdata.TestCreateFederationResponse)
+						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestCreateFederationResponse)
 						return resp, nil
 					})
 			},
 			input: CreateRequest{
 				Name:               "test_name",
 				Description:        "test_description",
-				Issuer:             "test_issuer",
-				SSOUrl:             "test_sso_url",
-				SignAuthnRequests:  true,
-				ForceAuthn:         true,
-				SessionMaxAgeHours: 1,
+				Issuer:             "https://idp.example.com",
+				ClientID:           "test_client_id",
+				ClientSecret:       "test_client_secret",
+				AuthURL:            "https://idp.example.com/authorize",
+				TokenURL:           "https://idp.example.com/token",
+				JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+				SessionMaxAgeHours: 24,
 			},
 			expectedResponse: &CreateResponse{
 				Federation: Federation{
@@ -204,11 +205,13 @@ func TestCreate(t *testing.T) {
 					Name:               "test_name",
 					Description:        "test_description",
 					Alias:              "test_alias",
-					Issuer:             "test_issuer",
-					SSOURL:             "test_sso_url",
-					SignAuthnRequests:  true,
-					ForceAuthn:         true,
-					SessionMaxAgeHours: 1,
+					Issuer:             "https://idp.example.com",
+					ClientID:           "test_client_id",
+					ClientSecret:       "test_client_secret",
+					AuthURL:            "https://idp.example.com/authorize",
+					TokenURL:           "https://idp.example.com/token",
+					JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+					SessionMaxAgeHours: 24,
 					AutoUsersCreation:  true,
 					EnableGroupMapping: true,
 				},
@@ -227,11 +230,13 @@ func TestCreate(t *testing.T) {
 			input: CreateRequest{
 				Name:               "test_name",
 				Description:        "test_description",
-				Issuer:             "test_issuer",
-				SSOUrl:             "test_sso_url",
-				SignAuthnRequests:  true,
-				ForceAuthn:         true,
-				SessionMaxAgeHours: 1,
+				Issuer:             "https://idp.example.com",
+				ClientID:           "test_client_id",
+				ClientSecret:       "test_client_secret",
+				AuthURL:            "https://idp.example.com/authorize",
+				TokenURL:           "https://idp.example.com/token",
+				JWKSURL:            "https://idp.example.com/.well-known/jwks.json",
+				SessionMaxAgeHours: 24,
 			},
 			expectedResponse: nil,
 			expectedError:    iamerrors.ErrForbidden,
@@ -266,35 +271,18 @@ func TestCreate(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	tests := []struct {
-		name             string
-		prepare          func()
-		expectedResponse *GetResponse
-		expectedError    error
+		name          string
+		prepare       func()
+		expectedError error
 	}{
 		{
 			name: "ok",
 			prepare: func() {
 				httpmock.RegisterResponder(
 					http.MethodPatch, testdata.TestURL+federationsIDURL, func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestGetFederationResponse)
+						resp := httpmock.NewStringResponse(http.StatusNoContent, "")
 						return resp, nil
 					})
-			},
-			expectedResponse: &GetResponse{
-				Federation: Federation{
-					ID:                 "123",
-					AccountID:          "123",
-					Name:               "test_name",
-					Description:        "test_description",
-					Alias:              "test_alias",
-					Issuer:             "test_issuer",
-					SSOURL:             "test_sso_url",
-					SignAuthnRequests:  true,
-					ForceAuthn:         true,
-					SessionMaxAgeHours: 1,
-					AutoUsersCreation:  true,
-					EnableGroupMapping: true,
-				},
 			},
 			expectedError: nil,
 		},
@@ -307,8 +295,7 @@ func TestUpdate(t *testing.T) {
 						return resp, nil
 					})
 			},
-			expectedResponse: nil,
-			expectedError:    iamerrors.ErrForbidden,
+			expectedError: iamerrors.ErrForbidden,
 		},
 	}
 
@@ -330,13 +317,12 @@ func TestUpdate(t *testing.T) {
 			desc := "test_description"
 			ctx := context.Background()
 			err := federationsAPI.Update(ctx, "123", UpdateRequest{
-				Name:               "test_name",
-				Description:        &desc,
-				Issuer:             "test_issuer",
-				SSOUrl:             "test_sso_url",
-				SignAuthnRequests:  &iTrue,
-				ForceAuthn:         &iTrue,
-				SessionMaxAgeHours: 1,
+				Name:        "test_name",
+				Description: &desc,
+				ClientID:    "test_client_id",
+				AuthURL:     "https://idp.example.com/authorize",
+				TokenURL:    "https://idp.example.com/token",
+				JWKSURL:     "https://idp.example.com/.well-known/jwks.json",
 			})
 
 			require.ErrorIs(err, tt.expectedError)
@@ -395,144 +381,6 @@ func TestDelete(t *testing.T) {
 			err := federationsAPI.Delete(ctx, "123")
 
 			require.ErrorIs(err, tt.expectedError)
-		})
-	}
-}
-
-func TestExists(t *testing.T) {
-	tests := []struct {
-		name           string
-		prepare        func()
-		expectedExists bool
-		expectedError  error
-	}{
-		{
-			name: "exists",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodHead, testdata.TestURL+federationsIDURL,
-					func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusOK, "")
-						return resp, nil
-					})
-			},
-			expectedExists: true,
-			expectedError:  nil,
-		},
-		{
-			name: "not found",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodHead, testdata.TestURL+federationsIDURL,
-					func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusNotFound, testdata.TestFederationNotFoundErr)
-						return resp, nil
-					})
-			},
-			expectedExists: false,
-			expectedError:  nil,
-		},
-		{
-			name: "error",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodHead, testdata.TestURL+federationsIDURL,
-					func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusForbidden, testdata.TestDoRequestErr)
-						return resp, nil
-					})
-			},
-			expectedExists: false,
-			expectedError:  iamerrors.ErrForbidden,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert := assert.New(t)
-			require := require.New(t)
-
-			federationsAPI := New(&client.BaseClient{
-				HTTPClient: &http.Client{},
-				APIUrl:     testdata.TestURL,
-				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
-			})
-
-			httpmock.ActivateNonDefault(federationsAPI.baseClient.HTTPClient)
-			defer httpmock.DeactivateAndReset()
-
-			tt.prepare()
-
-			ctx := context.Background()
-			exists, err := federationsAPI.Exists(ctx, "123")
-
-			require.ErrorIs(err, tt.expectedError)
-			assert.Equal(tt.expectedExists, exists)
-		})
-	}
-}
-
-func TestPreview(t *testing.T) {
-	tests := []struct {
-		name             string
-		prepare          func()
-		expectedResponse *FederationPreview
-		expectedError    error
-	}{
-		{
-			name: "ok",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodGet, testdata.TestURL+federationsIDURL+"/preview",
-					func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusOK, testdata.TestPreviewFederationResponse)
-						return resp, nil
-					})
-			},
-			expectedResponse: &FederationPreview{
-				ID:          "123",
-				Name:        "test_name",
-				Description: "test_description",
-				Alias:       "test_alias",
-			},
-			expectedError: nil,
-		},
-		{
-			name: "error",
-			prepare: func() {
-				httpmock.RegisterResponder(
-					http.MethodGet, testdata.TestURL+federationsIDURL+"/preview",
-					func(r *http.Request) (*http.Response, error) {
-						resp := httpmock.NewStringResponse(http.StatusForbidden, testdata.TestDoRequestErr)
-						return resp, nil
-					})
-			},
-			expectedResponse: nil,
-			expectedError:    iamerrors.ErrForbidden,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert := assert.New(t)
-			require := require.New(t)
-
-			federationsAPI := New(&client.BaseClient{
-				HTTPClient: &http.Client{},
-				APIUrl:     testdata.TestURL,
-				AuthMethod: &client.KeystoneTokenAuth{KeystoneToken: testdata.TestToken},
-			})
-
-			httpmock.ActivateNonDefault(federationsAPI.baseClient.HTTPClient)
-			defer httpmock.DeactivateAndReset()
-
-			tt.prepare()
-
-			ctx := context.Background()
-			actual, err := federationsAPI.Preview(ctx, "123")
-
-			require.ErrorIs(err, tt.expectedError)
-			assert.Equal(tt.expectedResponse, actual)
 		})
 	}
 }
