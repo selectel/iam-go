@@ -38,6 +38,11 @@ var (
 	ErrFederationCertificateNotFound   = errors.New("FEDERATION_CERTIFICATE_NOT_FOUND")
 	ErrFederationMaxAgeHoursRequired   = errors.New("FEDERATION_MAX_AGE_HOURS_REQUIRED")
 	ErrFederationNotFound              = errors.New("FEDERATION_NOT_FOUND")
+	ErrFederationClientIDRequired      = errors.New("FEDERATION_CLIENT_ID_REQUIRED")
+	ErrFederationClientSecretRequired  = errors.New("FEDERATION_CLIENT_SECRET_REQUIRED")
+	ErrFederationAuthURLRequired       = errors.New("FEDERATION_AUTH_URL_REQUIRED")
+	ErrFederationTokenURLRequired      = errors.New("FEDERATION_TOKEN_URL_REQUIRED")
+	ErrFederationJWKSURLRequired       = errors.New("FEDERATION_JWKS_URL_REQUIRED")
 
 	ErrCredentialNameRequired      = errors.New("CREDENTIAL_NAME_REQUIRED")
 	ErrCredentialAccessKeyRequired = errors.New("CREDENTIAL_ACCESS_KEY_REQUIRED")
@@ -86,6 +91,10 @@ var (
 		ErrFederationCertificateNotFound.Error():   ErrFederationCertificateNotFound,
 		ErrFederationNotFound.Error():              ErrFederationNotFound,
 		ErrFederationMaxAgeHoursRequired.Error():   ErrFederationMaxAgeHoursRequired,
+		ErrFederationClientIDRequired.Error():      ErrFederationClientIDRequired,
+		ErrFederationAuthURLRequired.Error():       ErrFederationAuthURLRequired,
+		ErrFederationTokenURLRequired.Error():      ErrFederationTokenURLRequired,
+		ErrFederationJWKSURLRequired.Error():       ErrFederationJWKSURLRequired,
 		ErrUserOrGroupNotFound.Error():             ErrUserOrGroupNotFound,
 		ErrServiceUserNameRequired.Error():         ErrServiceUserNameRequired,
 		ErrServiceUserPasswordRequired.Error():     ErrServiceUserPasswordRequired,
