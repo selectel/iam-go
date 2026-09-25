@@ -11,6 +11,7 @@ const TestListUsersResponse = `{
 			"auth_type": "local",
 			"id": "123",
 			"keystone_id": "123",
+			"enabled": true,
 			"roles": [
 				{
 					"scope": "account",
@@ -25,6 +26,7 @@ const TestGetUserResponse = `{
 	"auth_type": "local",
 	"id": "123",
 	"keystone_id": "123",
+	"enabled": true,
 	"roles": [
         {
             "scope": "account",
@@ -45,6 +47,7 @@ const TestCreateUserResponse = `{
 	"auth_type": "federated",
 	"keystone_id": "123",
 	"id": "123",
+	"enabled": true,
 	"roles": [
 		{
 			"scope": "account",
