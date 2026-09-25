@@ -333,10 +333,9 @@ func TestCreate(t *testing.T) {
 			httpmock.ActivateNonDefault(usersAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 			tt.prepare()
-			ctx := context.Background()
 
 			federation := tt.args.federation
-			actual, err := usersAPI.Create(ctx, CreateRequest{
+			actual, err := usersAPI.Create(context.Background(), CreateRequest{
 				AuthType:   tt.args.authType,
 				Email:      tt.args.email,
 				Federation: &federation,
@@ -357,6 +356,7 @@ func TestUpdate(t *testing.T) {
 		{name: "disable", enabled: false, body: `{"enabled":false}`},
 		{name: "enable", enabled: true, body: `{"enabled":true}`},
 	} {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			usersAPI := New(&client.BaseClient{
 				HTTPClient: &http.Client{},
@@ -366,13 +366,14 @@ func TestUpdate(t *testing.T) {
 			httpmock.ActivateNonDefault(usersAPI.baseClient.HTTPClient)
 			defer httpmock.DeactivateAndReset()
 
-			httpmock.RegisterResponder(http.MethodPatch, testdata.TestURL+usersIDURL, func(r *http.Request) (*http.Response, error) {
-				body, err := io.ReadAll(r.Body)
-				require.NoError(t, err)
-				assert.Equal(t, tt.body, string(body))
-				return httpmock.NewStringResponse(http.StatusOK,
-					fmt.Sprintf(`{"id":"123","enabled":%t}`, tt.enabled)), nil
-			})
+			httpmock.RegisterResponder(http.MethodPatch, testdata.TestURL+usersIDURL,
+				func(r *http.Request) (*http.Response, error) {
+					body, err := io.ReadAll(r.Body)
+					require.NoError(t, err)
+					assert.Equal(t, tt.body, string(body))
+					return httpmock.NewStringResponse(http.StatusOK,
+						fmt.Sprintf(`{"id":"123","enabled":%t}`, tt.enabled)), nil
+				})
 
 			actual, err := usersAPI.Update(context.Background(), "123", UpdateRequest{Enabled: &tt.enabled})
 			require.NoError(t, err)
