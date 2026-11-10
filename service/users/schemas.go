@@ -25,6 +25,7 @@ type User struct {
 	AuthType   AuthType     `json:"auth_type"`
 	Federation *Federation  `json:"federation,omitempty"`
 	Roles      []roles.Role `json:"roles"`
+	Enabled    bool         `json:"enabled"`
 	ID         string       `json:"id"`
 	KeystoneID string       `json:"keystone_id"`
 }
@@ -72,6 +73,16 @@ type createRequest struct {
 
 // CreateResponse represents a Selectel Panel User.
 type CreateResponse struct {
+	User
+}
+
+// UpdateRequest is used to set options for Update method.
+type UpdateRequest struct {
+	Enabled *bool `json:"enabled,omitempty"`
+}
+
+// UpdateResponse represents an updated Selectel Panel User.
+type UpdateResponse struct {
 	User
 }
 

@@ -122,6 +122,39 @@ func (s *Service) Create(ctx context.Context, input CreateRequest) (*CreateRespo
 	return &createdUser, nil
 }
 
+// Update updates a User with the given userID.
+func (s *Service) Update(ctx context.Context, userID string, input UpdateRequest) (*UpdateResponse, error) {
+	if userID == "" {
+		return nil, iamerrors.Error{Err: iamerrors.ErrUserIDRequired, Desc: "No userID was provided."}
+	}
+
+	path, err := url.JoinPath(apiVersion, "users", userID)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	body, err := json.Marshal(input)
+	if err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+
+	response, err := s.baseClient.DoRequest(ctx, client.DoRequestInput{
+		Body:   bytes.NewReader(body),
+		Method: http.MethodPatch,
+		Path:   path,
+	})
+	if err != nil {
+		//nolint:wrapcheck // DoRequest already wraps the error.
+		return nil, err
+	}
+
+	var updatedUser UpdateResponse
+	if err := client.UnmarshalJSON(response, &updatedUser); err != nil {
+		return nil, iamerrors.Error{Err: iamerrors.ErrInternalAppError, Desc: err.Error()}
+	}
+	return &updatedUser, nil
+}
+
 // Delete deletes a User from the account.
 func (s *Service) Delete(ctx context.Context, userID string) error {
 	if userID == "" {
